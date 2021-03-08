@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "708113874603",
+    "project_id": "newnormal-ea2af",
+    "storage_bucket": "newnormal-ea2af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708113874603:android:4a30171603e3a9281f81ee",
+        "android_client_info": {
+          "package_name": "com.example.newnormal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708113874603-9a3qo6m9pvmki830q6ran9vdv6p5fjii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlQYTyqQ6zVbQWsbVasO-1ncs6_85BoUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "708113874603-9a3qo6m9pvmki830q6ran9vdv6p5fjii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
