@@ -79,4 +79,7 @@
     <string name="pick_dates">Odaberite datum dolaska i odlaska!</string>
     <string name="dates_template">dd/mm/yyyy</string>
     <string name="pick_arrival_date">Odaberite datum dolaska:</string>
+    <string name="title_news">News</string>
+
+    <string name="text_hint"><b>Search Latest News...</b></string>
 </resources>
