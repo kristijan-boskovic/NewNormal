@@ -4,51 +4,42 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ImageView
-        android:id="@+id/newsThumbnailImageView"
+        android:id="@+id/iv_news_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/img_thumbnail"/>
 
     <TextView
-        android:id="@+id/newsTitleTextView"
+        android:id="@+id/tv_news_title"
         style="@style/viewParent.headerText"
         android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@id/newsThumbnailImageView"
+        android:layout_toRightOf="@id/iv_news_image"
         android:textSize="15sp"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="Back to beige: decoding this \nseason’s most unlikely, of the "/>
+        android:text="@string/news_article_title"/>
 
     <TextView
-        android:id="@+id/newsDetailTextView"
+        android:id="@+id/tv_news_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/featuredNewsContentColor"
-        android:layout_toRightOf="@id/newsThumbnailImageView"
-        android:layout_below="@id/newsTitleTextView"
+        android:layout_toRightOf="@id/iv_news_image"
+        android:layout_below="@id/tv_news_title"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="As far as trends go, you’d be forgiven \nfor assuming that beige equals boring. "/>
+        android:text="@string/news_article_description"/>
 
     <TextView
+        android:id="@+id/tv_news_publishing_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1 hrs ago"
+        android:text="@string/dd_mm_yyyy"
         android:layout_alignParentBottom="true"
         android:textColor="#8E909A"
         android:textSize="11sp"
         android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@id/newsThumbnailImageView"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Read More >"
-        android:textStyle="bold"
-        android:textSize="11sp"
-        android:textColor="#019AE8"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_toRightOf="@id/iv_news_image"/>
 </RelativeLayout>

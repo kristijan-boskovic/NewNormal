@@ -82,4 +82,9 @@
     <string name="title_news">News</string>
 
     <string name="text_hint"><b>Search Latest News...</b></string>
+    <string name="news_article_description">News article description</string>
+    <string name="news_article_title">News article title</string>
+    <string name="dd_mm_yyyy">DD/MM/YYYY</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
