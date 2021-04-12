@@ -14,12 +14,12 @@
 
         <activity
             android:name="com.example.newnormal.ui.activities.AddEditOfferActivity"
-            android:parentActivityName="com.example.newnormal.ui.activities.MainActivity" />
+            android:parentActivityName="com.example.newnormal.ui.activities.OldMainActivity" />
 
         <activity android:name="com.example.newnormal.ui.activities.RegistrationActivity" />
 
         <activity
-            android:name="com.example.newnormal.ui.activities.MainActivity"
+            android:name="com.example.newnormal.ui.activities.OldMainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name="com.example.newnormal.ui.activities.NewsActivity"
+            android:name="com.example.newnormal.ui.activities.MainActivity"
             android:label="@string/title_news"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

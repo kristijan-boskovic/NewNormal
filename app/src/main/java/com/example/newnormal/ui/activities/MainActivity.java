@@ -1,75 +1,168 @@
 package com.example.newnormal.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.newnormal.R;
-import com.example.newnormal.util.UserClient;
-import com.example.newnormal.data.models.User;
-import com.google.android.material.navigation.NavigationView;
+import com.example.newnormal.ui.BottomNavigationBehavior;
+import com.example.newnormal.ui.fragments.BlankFragment;
+import com.example.newnormal.ui.fragments.NewsFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private AppBarConfiguration mAppBarConfiguration;
+    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigationMyCourses:
+                    switchToBlankFragment();
+                    return true;
+                case R.id.navigationHome:
+                    switchToNewsFragment();
+                    return true;
+                case R.id.navigationSearch:
+                    switchToBlankFragment();
+                    return true;
+                case R.id.navigationMenu:
+                    switchToBlankFragment();
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        User user = ((UserClient)(getApplicationContext())).getUser();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        TextView tvHeaderName = headerView.findViewById(R.id.tv_header_name);
-        TextView tvHeaderEmail = headerView.findViewById(R.id.tv_header_email);
-        tvHeaderName.setText(user.getFullName());
-        tvHeaderEmail.setText(user.getEmail());
+//        if(new DarkModePrefManager(this).isNightMode()){
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//        }
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_offers, R.id.nav_all_offers, R.id.nav_reservations, R.id.nav_userprofile)
-                .setDrawerLayout(drawer)
-                .build();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavigationView.setSelectedItemId(R.id.navigationHome);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
+        layoutParams.setBehavior(new BottomNavigationBehavior());
+
+//        NewsApiClient newsApiClient = new NewsApiClient("ed691272a6f2434dab4498402eac8ad9");
+//
+//        // /v2/everything
+//        newsApiClient.getEverything(
+//                new EverythingRequest.Builder()
+//                        .q("covid")
+//                        .language("en")
+//                        .sortBy("publishedAt")
+//                        .build(),
+//                new NewsApiClient.ArticlesResponseCallback() {
+//                    @Override
+//                    public void onSuccess(ArticleResponse response) {
+//                        String newsTitle = response.getArticles().get(0).getTitle();
+//                        String newsDescription = response.getArticles().get(0).getDescription();
+//                        String newsImageUrl = response.getArticles().get(0).getUrlToImage();
+//
+//                        TextView tvFeaturedNewsTitle = findViewById(R.id.tv_featured_news_title);
+//                        TextView tvFeaturedNewsDescription = findViewById(R.id.tv_featured_news_description);
+//                        ImageView ivFeaturedNewsImage = findViewById(R.id.iv_featured_news_image);
+//
+//                        tvFeaturedNewsTitle.setText(newsTitle);
+//                        tvFeaturedNewsDescription.setText(newsDescription);
+//                        Picasso.get().load(newsImageUrl).into(ivFeaturedNewsImage);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Throwable throwable) {
+//                        System.out.println(throwable.getMessage());
+//                    }
+//                }
+//        );
+
+        // /v2/top-headlines
+//        newsApiClient.getTopHeadlines(
+//                new TopHeadlinesRequest.Builder()
+//                        .q("covid")
+//                        .language("en")
+//                        .build(),
+//                new NewsApiClient.ArticlesResponseCallback() {
+//                    @Override
+//                    public void onSuccess(ArticleResponse response) {
+//                        String newsTitle = response.getArticles().get(0).getTitle();
+//                        String newsDescription = response.getArticles().get(0).getDescription();
+//                        String newsImageUrl = response.getArticles().get(0).getUrlToImage();
+//
+//                        TextView tvFeaturedNewsTitle = findViewById(R.id.tv_featured_news_title);
+//                        TextView tvFeaturedNewsDescription = findViewById(R.id.tv_featured_news_description);
+//                        ImageView ivFeaturedNewsImage = findViewById(R.id.iv_featured_news);
+//
+//                        tvFeaturedNewsTitle.setText(newsTitle);
+//                        tvFeaturedNewsDescription.setText(newsDescription);
+//                        Picasso.get().load(newsImageUrl).into(ivFeaturedNewsImage);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Throwable throwable) {
+//                        System.out.println(throwable.getMessage());
+//                    }
+//                }
+//        );
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public void switchToNewsFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.container, new NewsFragment()).commit();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+    public void switchToBlankFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.container, new BlankFragment()).commit();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_sign_out) {
-            Intent i = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(i);
-            this.finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
+
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//        // Handle navigation view item clicks here.
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//        } else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_dark_mode) {
+//            //code for setting dark mode
+//            //true for dark mode, false for day mode, currently toggling on each click
+//            DarkModePrefManager darkModePrefManager = new DarkModePrefManager(this);
+//            darkModePrefManager.setDarkMode(!darkModePrefManager.isNightMode());
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//            recreate();
+//        }
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 }

@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             User signedInUser = loginViewModel.getUserByEmailAndPassword(userEmail, userPassword);
             ((UserClient)(getApplicationContext())).setUser(signedInUser);
             if (signedInUser != null) {
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                Intent i = new Intent(LoginActivity.this, OldMainActivity.class);
                 startActivity(i);
                 this.finish();
             } else {
