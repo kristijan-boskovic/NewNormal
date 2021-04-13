@@ -33,7 +33,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         holder.tvNewsTitle.setText(currentNews.getTitle());
         holder.tvNewsDescription.setText(currentNews.getDescription());
         holder.tvNewsPublishingDate.setText(currentNews.getPublishingDate());
-        Picasso.get().load(currentNews.getImageUrl()).into(holder.ivNewsImage);
+        Picasso.get()
+                .load(currentNews.getImageUrl())
+                .placeholder(R.drawable.ic_menu_gallery)
+                .error(R.drawable.ic_menu_gallery)
+                .resize(100, 100)
+                .centerCrop()
+                .into(holder.ivNewsImage);
     }
 
     @Override

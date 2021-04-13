@@ -1,6 +1,5 @@
 package com.example.newnormal.ui.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,25 +8,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.News;
-import com.example.newnormal.data.models.Offer;
-import com.example.newnormal.ui.activities.OfferDetailsActivity;
+import com.example.newnormal.ui.activities.MainActivity;
 import com.example.newnormal.ui.adapters.NewsAdapter;
-import com.example.newnormal.ui.adapters.OfferAdapter;
-import com.example.newnormal.vm.NewsViewModel;
-import com.example.newnormal.vm.OffersViewModel;
 
 import java.util.List;
 
 public class NewsFragment extends Fragment {
-    private NewsViewModel newsViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
@@ -38,13 +31,17 @@ public class NewsFragment extends Fragment {
         final NewsAdapter newsAdapter = new NewsAdapter();
         rvNewsArticles.setAdapter(newsAdapter);
 
-        newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
-        newsViewModel.getAllNews().observe(getViewLifecycleOwner(), new Observer<List<News>>() {
+        // TODO: replace this with more loosely coupled solution (search on Google: "send data from activity to fragment")
+        MainActivity activity = (MainActivity) getActivity();
+        LiveData<List<News>> newsList = activity.getNewsList();
+
+        newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
             @Override
             public void onChanged(@Nullable List<News> newsList) {
                 newsAdapter.setNews(newsList);
             }
         });
+
 
 //        newsAdapter.setOnItemClickListener(new OfferAdapter.OnItemClickListener() {
 //            @Override

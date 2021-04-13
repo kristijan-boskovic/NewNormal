@@ -7,12 +7,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.newnormal.R;
+import com.example.newnormal.data.models.News;
 import com.example.newnormal.ui.BottomNavigationBehavior;
 import com.example.newnormal.ui.fragments.BlankFragment;
 import com.example.newnormal.ui.fragments.NewsFragment;
+import com.example.newnormal.vm.NewsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -38,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    MutableLiveData<List<News>> newsList = new MutableLiveData<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,66 +64,7 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
 
-//        NewsApiClient newsApiClient = new NewsApiClient("ed691272a6f2434dab4498402eac8ad9");
-//
-//        // /v2/everything
-//        newsApiClient.getEverything(
-//                new EverythingRequest.Builder()
-//                        .q("covid")
-//                        .language("en")
-//                        .sortBy("publishedAt")
-//                        .build(),
-//                new NewsApiClient.ArticlesResponseCallback() {
-//                    @Override
-//                    public void onSuccess(ArticleResponse response) {
-//                        String newsTitle = response.getArticles().get(0).getTitle();
-//                        String newsDescription = response.getArticles().get(0).getDescription();
-//                        String newsImageUrl = response.getArticles().get(0).getUrlToImage();
-//
-//                        TextView tvFeaturedNewsTitle = findViewById(R.id.tv_featured_news_title);
-//                        TextView tvFeaturedNewsDescription = findViewById(R.id.tv_featured_news_description);
-//                        ImageView ivFeaturedNewsImage = findViewById(R.id.iv_featured_news_image);
-//
-//                        tvFeaturedNewsTitle.setText(newsTitle);
-//                        tvFeaturedNewsDescription.setText(newsDescription);
-//                        Picasso.get().load(newsImageUrl).into(ivFeaturedNewsImage);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Throwable throwable) {
-//                        System.out.println(throwable.getMessage());
-//                    }
-//                }
-//        );
-
-        // /v2/top-headlines
-//        newsApiClient.getTopHeadlines(
-//                new TopHeadlinesRequest.Builder()
-//                        .q("covid")
-//                        .language("en")
-//                        .build(),
-//                new NewsApiClient.ArticlesResponseCallback() {
-//                    @Override
-//                    public void onSuccess(ArticleResponse response) {
-//                        String newsTitle = response.getArticles().get(0).getTitle();
-//                        String newsDescription = response.getArticles().get(0).getDescription();
-//                        String newsImageUrl = response.getArticles().get(0).getUrlToImage();
-//
-//                        TextView tvFeaturedNewsTitle = findViewById(R.id.tv_featured_news_title);
-//                        TextView tvFeaturedNewsDescription = findViewById(R.id.tv_featured_news_description);
-//                        ImageView ivFeaturedNewsImage = findViewById(R.id.iv_featured_news);
-//
-//                        tvFeaturedNewsTitle.setText(newsTitle);
-//                        tvFeaturedNewsDescription.setText(newsDescription);
-//                        Picasso.get().load(newsImageUrl).into(ivFeaturedNewsImage);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Throwable throwable) {
-//                        System.out.println(throwable.getMessage());
-//                    }
-//                }
-//        );
+        newsList = (MutableLiveData<List<News>>) getNewsFromApi();
     }
 
     public void switchToNewsFragment() {
@@ -124,6 +75,15 @@ public class MainActivity extends AppCompatActivity {
     public void switchToBlankFragment() {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.container, new BlankFragment()).commit();
+    }
+
+    public LiveData<List<News>> getNewsFromApi() {
+        NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+        return newsViewModel.getNewsFromApi();
+    }
+
+    public LiveData<List<News>> getNewsList() {
+        return newsList;
     }
 
 //    @Override
