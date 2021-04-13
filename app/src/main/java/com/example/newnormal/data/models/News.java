@@ -1,47 +1,49 @@
 package com.example.newnormal.data.models;
 
 public class News {
-    private String title;
-    private String description;
-    private String publishingDate;
-    private String imageUrl;
+    private final String url;
+    private final String title;
+    private final String description;
+    private final String author;
+    private final String source;
+    private final String publishingDate;
+    private final String imageUrl;
 
-    public News(String title, String description, String publishingDate, String imageUrl) {
+    public News(String url, String title, String description, String author, String source, String publishingDate, String imageUrl) {
+        this.url = url;
         this.title = title;
         this.description = description;
+        this.author = author;
+        this.source = source;
         this.publishingDate = publishingDate;
         this.imageUrl = imageUrl;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getSource() {
+        return source;
     }
 
     public String getPublishingDate() {
         return publishingDate;
     }
 
-    public void setPublishingDate(String publishingDate) {
-        this.publishingDate = publishingDate;
-    }
-
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }

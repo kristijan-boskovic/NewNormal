@@ -47,6 +47,7 @@ public class NewsViewModel extends AndroidViewModel {
                     public void onSuccess(ArticleResponse response) {
                         List<Article> articles = response.getArticles();
                         for (Article article : articles) {
+                            String newsUrl = article.getUrl();
                             String newsTitle = article.getTitle();
                             String newsDescription = article.getDescription();
                             String newsPublishingTimeStamp = article.getPublishedAt();
@@ -62,7 +63,9 @@ public class NewsViewModel extends AndroidViewModel {
                             Format formatter = new SimpleDateFormat("dd.M.yyyy. HH:mm:ss");
                             String newsPublishingDate = formatter.format(date);
                             String newsImageUrl = article.getUrlToImage();
-                            News news = new News(newsTitle, newsDescription, newsPublishingDate, newsImageUrl);
+                            String newsAuthor = article.getAuthor();
+                            String newsSource = article.getSource().getName();
+                            News news = new News(newsUrl, newsTitle, newsDescription, newsAuthor, newsSource, newsPublishingDate, newsImageUrl);
                             newsList.add(news);
                         }
                         newsMutableList.setValue(newsList);
