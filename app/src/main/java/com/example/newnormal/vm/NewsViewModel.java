@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -34,6 +35,7 @@ public class NewsViewModel extends AndroidViewModel {
     public LiveData<List<News>> getNewsFromApi() {
         final MutableLiveData<List<News>> newsMutableList = new MutableLiveData<>();
         final List<News> newsList = new ArrayList<>();
+        final LinkedHashSet<News> hashSet = new LinkedHashSet<>();
 
         // /v2/everything
         newsApiClient.getEverything(
@@ -66,7 +68,10 @@ public class NewsViewModel extends AndroidViewModel {
                             String newsAuthor = article.getAuthor();
                             String newsSource = article.getSource().getName();
                             News news = new News(newsUrl, newsTitle, newsDescription, newsAuthor, newsSource, newsPublishingDate, newsImageUrl);
-                            newsList.add(news);
+                            if (hashSet.add(news)) {
+                                newsList.add(news);
+                            }
+//                            newsList.add(news);
                         }
                         newsMutableList.setValue(newsList);
                     }
