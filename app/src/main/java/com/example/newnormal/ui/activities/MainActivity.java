@@ -1,11 +1,11 @@
 package com.example.newnormal.ui.activities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -17,10 +17,8 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
 import com.example.newnormal.R;
-import com.example.newnormal.data.models.EntityInfo;
 import com.example.newnormal.data.models.News;
 import com.example.newnormal.data.models.SentimentInfo;
-import com.example.newnormal.data.models.TokenInfo;
 import com.example.newnormal.ui.BottomNavigationBehavior;
 import com.example.newnormal.ui.fragments.ApiFragment;
 import com.example.newnormal.ui.fragments.BlankFragment;
@@ -30,19 +28,11 @@ import com.example.newnormal.vm.NewsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
-
-import static com.example.newnormal.ui.fragments.ApiFragment.analyzeSentiment;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements ApiFragment.Callback {
-    private static final int API_ENTITIES = 0;
-    private static final int API_SENTIMENT = 1;
-    private static final int API_SYNTAX = 2;
-
     private static final String FRAGMENT_API = "api";
-
     private static final int LOADER_ACCESS_TOKEN = 1;
-
-    private static final String STATE_SHOWING_RESULTS = "showing_results";
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -94,11 +84,19 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
         prepareApi();
 
         newsList = (MutableLiveData<List<News>>) getNewsFromApi();
-//        analyzeSentiment("I like this house a lot. This is a great place.");
     }
 
-    public void performSentimentAnalysis(String text) {
-        analyzeSentiment(text);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public SentimentInfo performSentimentAnalysis(String text) {
+        SentimentInfo sentimentInfo = null;
+        try {
+            sentimentInfo = getApiFragment().analyzeSentiment(text);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return sentimentInfo;
     }
 
     private ApiFragment getApiFragment() {
@@ -150,12 +148,6 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
 //    public void onEntitiesReady(EntityInfo[] entities) {
 //
 //    }
-
-    @Override
-    public void onSentimentReady(SentimentInfo sentiment) {
-        String a = "";
-
-    }
 
 //    @Override
 //    public void onSyntaxReady(TokenInfo[] tokens) {

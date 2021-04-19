@@ -16,9 +16,7 @@
 
 package com.example.newnormal.ui.fragments;
 
-import com.example.newnormal.data.models.EntityInfo;
 import com.example.newnormal.data.models.SentimentInfo;
-import com.example.newnormal.data.models.TokenInfo;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -28,30 +26,26 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.language.v1.CloudNaturalLanguage;
 import com.google.api.services.language.v1.CloudNaturalLanguageRequest;
 import com.google.api.services.language.v1.CloudNaturalLanguageScopes;
-import com.google.api.services.language.v1.model.AnalyzeEntitiesRequest;
-import com.google.api.services.language.v1.model.AnalyzeEntitiesResponse;
 import com.google.api.services.language.v1.model.AnalyzeSentimentRequest;
 import com.google.api.services.language.v1.model.AnalyzeSentimentResponse;
-import com.google.api.services.language.v1.model.AnnotateTextRequest;
-import com.google.api.services.language.v1.model.AnnotateTextResponse;
 import com.google.api.services.language.v1.model.Document;
-import com.google.api.services.language.v1.model.Entity;
-import com.google.api.services.language.v1.model.Features;
-import com.google.api.services.language.v1.model.Token;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -71,12 +65,12 @@ public class ApiFragment extends Fragment {
 //         */
 //        void onEntitiesReady(EntityInfo[] entities);
 
-        /**
-         * Called when a "sentiment" API request is complete.
-         *
-         * @param sentiment The sentiment.
-         */
-        void onSentimentReady(SentimentInfo sentiment);
+//        /**
+//         * Called when a "sentiment" API request is complete.
+//         *
+//         * @param sentiment The sentiment.
+//         */
+//        void onSentimentReady(SentimentInfo sentiment);
 
 //        /**
 //         * Called when a "syntax" API request is complete.
@@ -101,7 +95,7 @@ public class ApiFragment extends Fragment {
             }).build();
 
     private static final BlockingQueue<CloudNaturalLanguageRequest<? extends GenericJson>> mRequests
-            = new ArrayBlockingQueue<>(3);
+            = new ArrayBlockingQueue<>(20);
 
     private static Thread mThread;
 
@@ -130,10 +124,13 @@ public class ApiFragment extends Fragment {
         mCredential = new GoogleCredential()
                 .setAccessToken(token)
                 .createScoped(CloudNaturalLanguageScopes.all());
-        startWorkerThread();
+//        startWorkerThread();
     }
 
-    public static void analyzeSentiment(String text) {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public SentimentInfo analyzeSentiment(String text) throws ExecutionException, InterruptedException {
+        final CompletableFuture<SentimentInfo> completableFuture = new CompletableFuture<>();
+
         try {
             mRequests.add(mApi
                     .documents()
@@ -141,82 +138,68 @@ public class ApiFragment extends Fragment {
                             .setDocument(new Document()
                                     .setContent(text)
                                     .setType("PLAIN_TEXT"))));
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try  {
+                        GenericJson genericJson = mRequests.take().execute();
+                        SentimentInfo sentimentInfo = deliverResponse(genericJson);
+
+                        completableFuture.complete(sentimentInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         } catch (IOException e) {
             Log.e(TAG, "Failed to create analyze request.", e);
         }
+        SentimentInfo resultFromThread = completableFuture.get();
+        return resultFromThread;
     }
 
-    private void startWorkerThread() {
-        if (mThread != null) {
-            return;
-        }
-        mThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (mThread == null) {
-                        break;
-                    }
-                    try {
-                        // API calls are executed here in this worker thread
-                        deliverResponse(mRequests.take().execute());
-                    } catch (InterruptedException e) {
-                        Log.e(TAG, "Interrupted.", e);
-                        break;
-                    } catch (IOException e) {
-                        Log.e(TAG, "Failed to execute a request.", e);
-                    }
-                }
-            }
-        });
-        mThread.start();
-    }
-
-    private void deliverResponse(GenericJson response) {
-        final Activity activity = getActivity();
-//        if (response instanceof AnalyzeEntitiesResponse) {
-//            final List<Entity> entities = ((AnalyzeEntitiesResponse) response).getEntities();
-//            final int size = entities.size();
-//            final EntityInfo[] array = new EntityInfo[size];
-//            for (int i = 0; i < size; i++) {
-//                array[i] = new EntityInfo(entities.get(i));
-//            }
-//            activity.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (mCallback != null) {
-//                        mCallback.onEntitiesReady(array);
+//    private void startWorkerThread() {
+//        if (mThread != null) {
+//            return;
+//        }
+//        mThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    if (mThread == null) {
+//                        break;
+//                    }
+//                    try {
+//                        // API calls are executed here in this worker thread
+//                        deliverResponse(mRequests.take().execute());
+//                    } catch (InterruptedException e) {
+//                        Log.e(TAG, "Interrupted.", e);
+//                        break;
+//                    } catch (IOException e) {
+//                        Log.e(TAG, "Failed to execute a request.", e);
 //                    }
 //                }
-//            });
-//        }
+//            }
+//        });
+//        mThread.start();
+//    }
+
+    private SentimentInfo deliverResponse(GenericJson response) {
         if (response instanceof AnalyzeSentimentResponse) {
             final SentimentInfo sentiment = new SentimentInfo(((AnalyzeSentimentResponse) response)
                     .getDocumentSentiment());
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mCallback != null) {
-                        mCallback.onSentimentReady(sentiment);
-                    }
-                }
-            });
-        }
-//        } else if (response instanceof AnnotateTextResponse) {
-//            final List<Token> tokens = ((AnnotateTextResponse) response).getTokens();
-//            final int size = tokens.size();
-//            final TokenInfo[] array = new TokenInfo[size];
-//            for (int i = 0; i < size; i++) {
-//                array[i] = new TokenInfo(tokens.get(i));
-//            }
 //            activity.runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {
 //                    if (mCallback != null) {
-//                        mCallback.onSyntaxReady(array);
+//                        mCallback.onSentimentReady(sentiment);
 //                    }
+//                    MainActivity.sentimentResult = sentiment;
+            return sentiment;
 //                }
 //            });
-//        }
+        }
+        return null;
     }
 }

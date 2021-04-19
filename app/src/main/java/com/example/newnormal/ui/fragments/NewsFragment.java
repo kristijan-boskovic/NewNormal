@@ -1,6 +1,8 @@
 package com.example.newnormal.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -16,10 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.News;
+import com.example.newnormal.data.models.SentimentInfo;
 import com.example.newnormal.ui.activities.MainActivity;
 import com.example.newnormal.ui.activities.NewsArticleActivity;
 import com.example.newnormal.ui.adapters.NewsAdapter;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class NewsFragment extends Fragment {
@@ -40,14 +45,19 @@ public class NewsFragment extends Fragment {
         LiveData<List<News>> newsList = activity.getNewsList();
 
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChanged(@Nullable List<News> newsList) {
-
-                for (News news : newsList) {
-
+                // TODO: add ProgressDialog (async)
+                Iterator<News> it = newsList.iterator();
+                while (it.hasNext()) {
+                    News news = it.next();
+                    SentimentInfo sentimentInfo = activity.performSentimentAnalysis(news.getDescription());
+                    float sentimentScore = sentimentInfo.score;
+                    if (sentimentScore <= 0) {
+                        it.remove();
+                    }
                 }
-                String text = newsList.get(0).getDescription();
-                activity.performSentimentAnalysis(text);
                 newsAdapter.setNews(newsList);
             }
         });

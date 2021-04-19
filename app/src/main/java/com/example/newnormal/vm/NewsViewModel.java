@@ -2,8 +2,10 @@ package com.example.newnormal.vm;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -45,6 +48,7 @@ public class NewsViewModel extends AndroidViewModel {
                         .sortBy("publishedAt")
                         .build(),
                 new NewsApiClient.ArticlesResponseCallback() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(ArticleResponse response) {
                         List<Article> articles = response.getArticles();
@@ -73,6 +77,8 @@ public class NewsViewModel extends AndroidViewModel {
                             }
 //                            newsList.add(news);
                         }
+                        HashSet<String> seen = new HashSet<>();
+                        newsList.removeIf(e -> !seen.add(e.getDescription())); // Remove duplicate news articles (same articles with different URLs)
                         newsMutableList.setValue(newsList);
                     }
 
