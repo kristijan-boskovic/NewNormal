@@ -2,26 +2,48 @@ package com.example.newnormal.ui.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import com.example.newnormal.R;
+import com.example.newnormal.data.models.EntityInfo;
 import com.example.newnormal.data.models.News;
+import com.example.newnormal.data.models.SentimentInfo;
+import com.example.newnormal.data.models.TokenInfo;
 import com.example.newnormal.ui.BottomNavigationBehavior;
+import com.example.newnormal.ui.fragments.ApiFragment;
 import com.example.newnormal.ui.fragments.BlankFragment;
 import com.example.newnormal.ui.fragments.NewsFragment;
+import com.example.newnormal.util.AccessTokenLoader;
 import com.example.newnormal.vm.NewsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import static com.example.newnormal.ui.fragments.ApiFragment.analyzeSentiment;
+
+public class MainActivity extends AppCompatActivity implements ApiFragment.Callback {
+    private static final int API_ENTITIES = 0;
+    private static final int API_SENTIMENT = 1;
+    private static final int API_SYNTAX = 2;
+
+    private static final String FRAGMENT_API = "api";
+
+    private static final int LOADER_ACCESS_TOKEN = 1;
+
+    private static final String STATE_SHOWING_RESULTS = "showing_results";
+
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -64,7 +86,45 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
 
+        // Prepare the API
+        final FragmentManager fm = getSupportFragmentManager();
+        if (getApiFragment() == null) {
+            fm.beginTransaction().add(new ApiFragment(), FRAGMENT_API).commit();
+        }
+        prepareApi();
+
         newsList = (MutableLiveData<List<News>>) getNewsFromApi();
+//        analyzeSentiment("I like this house a lot. This is a great place.");
+    }
+
+    public void performSentimentAnalysis(String text) {
+        analyzeSentiment(text);
+    }
+
+    private ApiFragment getApiFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(FRAGMENT_API);
+        return (ApiFragment) fragment;
+    }
+
+    private void prepareApi() {
+        // Initiate token refresh
+        getSupportLoaderManager().initLoader(LOADER_ACCESS_TOKEN, null,
+                new LoaderManager.LoaderCallbacks<String>() {
+                    @Override
+                    public Loader<String> onCreateLoader(int id, Bundle args) {
+                        return new AccessTokenLoader(MainActivity.this);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<String> loader, String token) {
+                        getApiFragment().setAccessToken(token);
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<String> loader) {
+                    }
+                });
     }
 
     public void switchToNewsFragment() {
@@ -85,6 +145,22 @@ public class MainActivity extends AppCompatActivity {
     public LiveData<List<News>> getNewsList() {
         return newsList;
     }
+
+//    @Override
+//    public void onEntitiesReady(EntityInfo[] entities) {
+//
+//    }
+
+    @Override
+    public void onSentimentReady(SentimentInfo sentiment) {
+        String a = "";
+
+    }
+
+//    @Override
+//    public void onSyntaxReady(TokenInfo[] tokens) {
+//
+//    }
 
 //    @Override
 //    public void onBackPressed() {

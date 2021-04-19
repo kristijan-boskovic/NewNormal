@@ -82,36 +82,6 @@ public class NewsViewModel extends AndroidViewModel {
                     }
                 }
         );
-
-        // /v2/top-headlines
-//        newsApiClient.getTopHeadlines(
-//                new TopHeadlinesRequest.Builder()
-//                        .q("covid")
-//                        .language("en")
-//                        .build(),
-//                new NewsApiClient.ArticlesResponseCallback() {
-//                    @Override
-//                    public void onSuccess(ArticleResponse response) {
-//                        String newsTitle = response.getArticles().get(0).getTitle();
-//                        String newsDescription = response.getArticles().get(0).getDescription();
-//                        String newsImageUrl = response.getArticles().get(0).getUrlToImage();
-//
-//                        TextView tvFeaturedNewsTitle = findViewById(R.id.tv_featured_news_title);
-//                        TextView tvFeaturedNewsDescription = findViewById(R.id.tv_featured_news_description);
-//                        ImageView ivFeaturedNewsImage = findViewById(R.id.iv_featured_news);
-//
-//                        tvFeaturedNewsTitle.setText(newsTitle);
-//                        tvFeaturedNewsDescription.setText(newsDescription);
-//                        Picasso.get().load(newsImageUrl).into(ivFeaturedNewsImage);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Throwable throwable) {
-//                        System.out.println(throwable.getMessage());
-//                    }
-//                }
-//        );
-
         return newsMutableList;
     }
 }

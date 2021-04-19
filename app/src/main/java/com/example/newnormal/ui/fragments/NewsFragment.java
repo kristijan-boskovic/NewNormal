@@ -36,12 +36,18 @@ public class NewsFragment extends Fragment {
         rvNewsArticles.setAdapter(newsAdapter);
 
         // TODO: replace this with more loosely coupled solution (search on Google: "send data from activity to fragment")
-        MainActivity activity = (MainActivity) getActivity();
+        final MainActivity activity = (MainActivity) getActivity();
         LiveData<List<News>> newsList = activity.getNewsList();
 
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
             @Override
             public void onChanged(@Nullable List<News> newsList) {
+
+                for (News news : newsList) {
+
+                }
+                String text = newsList.get(0).getDescription();
+                activity.performSentimentAnalysis(text);
                 newsAdapter.setNews(newsList);
             }
         });
