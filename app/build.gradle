@@ -27,6 +27,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    // exclude files that are not needed from the cloud client libraries
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/INDEX.LIST'
+    }
 }
 
 ext {
@@ -63,18 +68,22 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // Dependencies for Google API Client Libraries
-    implementation("com.google.http-client:google-http-client:$googleApiClientVersion") {
-        exclude module: 'httpclient'
-        exclude module: 'jsr305'
-    }
-    implementation("com.google.api-client:google-api-client-android:$googleApiClientVersion"){
-        exclude module: 'httpclient'
-        exclude module: 'jsr305'
-    }
-    implementation("com.google.apis:google-api-services-language:v1-rev386-$googleApiClientVersion") {
-        exclude module: 'httpclient'
-        exclude module: 'jsr305'
-    }
+//    implementation("com.google.http-client:google-http-client:$googleApiClientVersion") {
+//        exclude module: 'httpclient'
+//        exclude module: 'jsr305'
+//    }
+//    implementation("com.google.api-client:google-api-client-android:$googleApiClientVersion"){
+//        exclude module: 'httpclient'
+//        exclude module: 'jsr305'
+//    }
+//    implementation("com.google.apis:google-api-services-language:v1-rev386-$googleApiClientVersion") {
+//        exclude module: 'httpclient'
+//        exclude module: 'jsr305'
+//    }
+
+    // include the language API
+    implementation 'io.grpc:grpc-okhttp:1.10.0'
+    implementation 'com.google.cloud:google-cloud-language:1.22.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -19,11 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.News;
-import com.example.newnormal.data.models.SentimentInfo;
+//import com.example.newnormal.data.models.SentimentInfo;
 import com.example.newnormal.ui.activities.MainActivity;
 import com.example.newnormal.ui.activities.NewsArticleActivity;
 import com.example.newnormal.ui.adapters.NewsAdapter;
+import com.google.cloud.language.v1.Sentiment;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,19 +47,27 @@ public class NewsFragment extends Fragment {
         LiveData<List<News>> newsList = activity.getNewsList();
 
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChanged(@Nullable List<News> newsList) {
                 // TODO: add ProgressDialog (async)
-                Iterator<News> it = newsList.iterator();
-                while (it.hasNext()) {
-                    News news = it.next();
-                    SentimentInfo sentimentInfo = activity.performSentimentAnalysis(news.getDescription());
-                    float sentimentScore = sentimentInfo.score;
-                    if (sentimentScore <= 0) {
-                        it.remove();
+                List<String> newsDescriptions = new ArrayList<>();
+                for (News news : newsList) {
+                    newsDescriptions.add(news.getDescription());
+                }
+                List<Sentiment> sentiments = activity.performSentimentAnalysisClient(newsDescriptions);
+                if (sentiments.size() == newsList.size()) {
+                    Iterator<News> it = newsList.iterator();
+                    int index = 0;
+                    while (it.hasNext()) {
+                        News news = it.next();
+                        float sentimentScore = sentiments.get(index).getScore();
+                        if (sentimentScore <= 0) {
+                            it.remove();
+                        }
+                        index++;
                     }
                 }
+
                 newsAdapter.setNews(newsList);
             }
         });
