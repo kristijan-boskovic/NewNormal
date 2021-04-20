@@ -102,33 +102,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<Sentiment> performSentimentAnalysisClient(List<String> texts) {
-        // call the API
         for (String text : texts) {
-//            new AnalyzeTask().execute(text);
             analyzeSentiment(text);
         }
         return sentiments;
     }
 
     private void analyzeSentiment(String text) {
-        AnalyzeSentimentResponse response = null;
-
-        AnalyzeSentimentRequest request = AnalyzeSentimentRequest.newBuilder()
-                .setDocument(Document.newBuilder()
-                        .setContent(text)
-                        .setType(Document.Type.PLAIN_TEXT)
-                        .build())
+        Document document = Document.newBuilder()
+                .setContent(text)
+                .setType(Document.Type.PLAIN_TEXT)
                 .build();
-        try {
-            ApiFuture<AnalyzeSentimentResponse> future = mLanguageClient.analyzeSentimentCallable().futureCall(request);
-            response = future.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-//            return mLanguageClient.analyzeSentimentCallable(request);
-//        return response;
+        AnalyzeSentimentResponse response = mLanguageClient.analyzeSentiment(document);
         Sentiment sentiment = response.getDocumentSentiment();
         sentiments.add(sentiment);
     }
@@ -139,39 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
         // shutdown the connection
         mLanguageClient.shutdown();
-    }
-
-    private class AnalyzeTask extends AsyncTask<String, Void, AnalyzeSentimentResponse> {
-        AnalyzeSentimentResponse response = null;
-
-        @Override
-        protected AnalyzeSentimentResponse doInBackground(String... args) {
-            AnalyzeSentimentRequest request = AnalyzeSentimentRequest.newBuilder()
-                    .setDocument(Document.newBuilder()
-                            .setContent(args[0])
-                            .setType(Document.Type.PLAIN_TEXT)
-                            .build())
-                    .build();
-            try {
-                ApiFuture<AnalyzeSentimentResponse> future = mLanguageClient.analyzeSentimentCallable().futureCall(request);
-                response = future.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-//            return mLanguageClient.analyzeSentimentCallable(request);
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(AnalyzeSentimentResponse analyzeEntitiesResponse) {
-            // update UI with results
-//            mProgressView.setVisibility(View.GONE);
-//            mResultText.setText(analyzeEntitiesResponse.toString());
-            Sentiment sentiment = analyzeEntitiesResponse.getDocumentSentiment();
-            sentiments.add(sentiment);
-        }
     }
 
     public void switchToNewsFragment() {
