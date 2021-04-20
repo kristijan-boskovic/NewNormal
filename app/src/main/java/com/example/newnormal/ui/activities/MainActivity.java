@@ -29,6 +29,7 @@ import com.google.cloud.language.v1.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.LanguageServiceSettings;
+import com.google.cloud.language.v1.Sentence;
 import com.google.cloud.language.v1.Sentiment;
 
 import java.io.IOException;
@@ -95,16 +96,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new IllegalStateException("Unable to create a language client", e);
         }
-
-//        String text = "Hi there Sunnyvale California!";
-//        // call the API
-//        new AnalyzeTask().execute(text);
     }
 
-    public List<Sentiment> performSentimentAnalysisClient(List<String> texts) {
-        for (String text : texts) {
-            analyzeSentiment(text);
-        }
+    public List<Sentiment> performSentimentAnalysisClient(String text) {
+        analyzeSentiment(text);
         return sentiments;
     }
 
@@ -113,9 +108,17 @@ public class MainActivity extends AppCompatActivity {
                 .setContent(text)
                 .setType(Document.Type.PLAIN_TEXT)
                 .build();
-        AnalyzeSentimentResponse response = mLanguageClient.analyzeSentiment(document);
-        Sentiment sentiment = response.getDocumentSentiment();
-        sentiments.add(sentiment);
+        try {
+            AnalyzeSentimentResponse response = mLanguageClient.analyzeSentiment(document);
+            List<Sentence> sentenceList = response.getSentencesList();
+            for (Sentence sentence : sentenceList) {
+                Sentiment sentiment = sentence.getSentiment();
+                sentiments.add(sentiment);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

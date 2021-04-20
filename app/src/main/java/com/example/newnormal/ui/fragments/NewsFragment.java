@@ -25,6 +25,7 @@ import com.example.newnormal.ui.activities.NewsArticleActivity;
 import com.example.newnormal.ui.adapters.NewsAdapter;
 import com.google.cloud.language.v1.Sentiment;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,27 +48,52 @@ public class NewsFragment extends Fragment {
         LiveData<List<News>> newsList = activity.getNewsList();
 
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChanged(@Nullable List<News> newsList) {
                 // TODO: add ProgressDialog (async)
-                List<String> newsDescriptions = new ArrayList<>();
+                // TODO: move this sentiment analysis process somewhere where will be done only once (e.g. MainActivity or NewsViewModel)
+                List<String> newsTitlesList = new ArrayList<>();
                 for (News news : newsList) {
-                    newsDescriptions.add(news.getDescription());
+                    newsTitlesList.add(news.getTitle());
                 }
-                List<Sentiment> sentiments = activity.performSentimentAnalysisClient(newsDescriptions);
+
+                StringBuilder newsTitlesSb = new StringBuilder();
+                for (String newsTitle : newsTitlesList) {
+                    if (newsTitle.contains(".") && newsTitle.indexOf(".") < newsTitle.length() - 1) {
+                        newsList.removeIf(e -> newsTitle.equals(e.getTitle())); // Remove news articles with dot inside text.
+                    }
+                    else {
+                        if (newsTitle.endsWith(".") || newsTitle.endsWith("?") || newsTitle.endsWith("!")) {
+                            if (newsTitle.endsWith("...")) {
+                                newsTitlesSb.append(newsTitle.substring(0, newsTitle.length() - 2)).append(" ");
+                            } else {
+                                newsTitlesSb.append(newsTitle).append(" ");
+                            }
+                        } else {
+                            newsTitlesSb.append(newsTitle).append(". ");
+                        }
+                    }
+                }
+                String newsTitlesString = newsTitlesSb.toString().trim();
+
+                List<Sentiment> sentiments = activity.performSentimentAnalysisClient(newsTitlesString);
                 if (sentiments.size() == newsList.size()) {
                     Iterator<News> it = newsList.iterator();
                     int index = 0;
                     while (it.hasNext()) {
                         News news = it.next();
-                        float sentimentScore = sentiments.get(index).getScore();
+                        Sentiment sentiment = sentiments.get(index);
+                        float sentimentScore = 0;
+                        if (sentiment != null) {
+                            sentimentScore = sentiment.getScore();
+                        }
                         if (sentimentScore <= 0) {
                             it.remove();
                         }
                         index++;
                     }
                 }
-
                 newsAdapter.setNews(newsList);
             }
         });

@@ -43,9 +43,12 @@ public class NewsViewModel extends AndroidViewModel {
         // /v2/everything
         newsApiClient.getEverything(
                 new EverythingRequest.Builder()
-                        .q("covid")
+                        .q("covid,-positive")
                         .language("en")
+                        .sources("google-news,bbc-news,independent,abc-news,cbs-news,cnn,fox-news,medical-news-today,nbc-news,time")
                         .sortBy("publishedAt")
+                        .pageSize(25)
+                        .page(4)
                         .build(),
                 new NewsApiClient.ArticlesResponseCallback() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
