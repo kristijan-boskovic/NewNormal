@@ -16,6 +16,7 @@ import com.example.newnormal.data.repositories.OfferRepository;
 import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.Article;
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
+import com.kwabenaberko.newsapilib.models.request.TopHeadlinesRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
 
 import java.text.Format;
@@ -43,13 +44,19 @@ public class NewsViewModel extends AndroidViewModel {
         // /v2/everything
         newsApiClient.getEverything(
                 new EverythingRequest.Builder()
-                        .q("covid,-positive")
+                        .q("covid")
                         .language("en")
                         .sources("google-news,bbc-news,independent,abc-news,cbs-news,cnn,fox-news,medical-news-today,nbc-news,time")
                         .sortBy("publishedAt")
-                        .pageSize(25)
-                        .page(4)
+                        .pageSize(100)
                         .build(),
+//        newsApiClient.getTopHeadlines(
+//                new TopHeadlinesRequest.Builder()
+//                        .q("covid")
+//                        .language("en")
+//                        .category("health")
+//                        .pageSize(100)
+//                        .build(),
                 new NewsApiClient.ArticlesResponseCallback() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
