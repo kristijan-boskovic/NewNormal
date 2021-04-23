@@ -61,25 +61,43 @@ public class NewsFragment extends Fragment {
 
                 StringBuilder newsTitlesSb = new StringBuilder();
 //                for (String newsTitle : newsTitlesList) {
-                Iterator<String> newsTitleIterator = newsTitlesList.iterator();
-                while (newsTitleIterator.hasNext()) {
-                    String newsTitle = newsTitleIterator.next();
-                    if ((newsTitle.contains(". ") || newsTitle.contains(".' ") || newsTitle.contains(".\" ")) && newsTitle.indexOf(".") < newsTitle.length() - 1) {
-                        newsList.removeIf(e -> newsTitle.equals(e.getTitle())); // Remove news articles with dot inside text.
-                        newsTitleIterator.remove();
-                    } else {
-                        if (newsTitle.endsWith(".") || newsTitle.endsWith("?") || newsTitle.endsWith("!")) {
-                            if (newsTitle.endsWith("...")) {
-                                newsTitlesSb.append(newsTitle.substring(0, newsTitle.length() - 2)).append(" ");
-                            } else {
-                                newsTitlesSb.append(newsTitle).append(" ");
-                            }
-                        } else {
-                            newsTitlesSb.append(newsTitle).append(". ");
-                        }
-                    }
-                }
+//                Iterator<String> newsTitleIterator = newsTitlesList.iterator();
+//                while (newsTitleIterator.hasNext()) {
+//                    String newsTitle = newsTitleIterator.next();
+//                    if ((newsTitle.contains(". ") || newsTitle.contains(".' ") || newsTitle.contains(".\" ")) && newsTitle.indexOf(".") < newsTitle.length() - 1) {
+//                        newsList.removeIf(e -> newsTitle.equals(e.getTitle())); // Remove news articles with dot inside text.
+//                        newsTitleIterator.remove();
+//                    }
+//                    else {
+//                        if (newsTitle.endsWith(".") || newsTitle.endsWith("?") || newsTitle.endsWith("!")) {
+//                            if (newsTitle.endsWith("...")) {
+//                                newsTitlesSb.append(newsTitle.substring(0, newsTitle.length() - 2)).append(" ");
+//                            }
+//                            else {
+//                                newsTitlesSb.append(newsTitle).append(" ");
+//                            }
+//                        }
+//                        else {
+//                            newsTitlesSb.append(newsTitle).append(". ");
+//                        }
+//                    }
 //                }
+////                }
+                for (int i = 0; i < newsTitlesList.size(); i++) {
+                    String newsTitle = newsTitlesList.get(i);
+                    if (newsTitle.contains(".")) {
+                        newsTitle = newsTitle.replace(".", "");
+                    }
+                    if (newsTitle.contains("!")) {
+                        newsTitle = newsTitle.replace("!", "");
+                    }
+                    if (newsTitle.contains("?")) {
+                        newsTitle = newsTitle.replace("?", "");
+                    }
+
+                    newsTitlesList.set(i, newsTitle);
+                    newsTitlesSb.append(newsTitle).append(". ");
+                }
                 String newsTitlesString = newsTitlesSb.toString().trim();
 
                 List<Sentiment> sentiments = activity.performSentimentAnalysisClient(newsTitlesString);
