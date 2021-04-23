@@ -84,6 +84,7 @@ public class NewsFragment extends Fragment {
 ////                }
                 for (int i = 0; i < newsTitlesList.size(); i++) {
                     String newsTitle = newsTitlesList.get(i);
+
                     if (newsTitle.contains(".")) {
                         newsTitle = newsTitle.replace(".", "");
                     }
