@@ -53,7 +53,6 @@ public class NewsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<News> newsList) {
                 // TODO: add ProgressDialog (async)
-                // TODO: move this sentiment analysis process somewhere where will be done only once (e.g. MainActivity or NewsViewModel)
                 List<String> newsTitlesList = new ArrayList<>();
                 for (News news : newsList) {
                     newsTitlesList.add(news.getTitle());
@@ -94,12 +93,22 @@ public class NewsFragment extends Fragment {
                     if (newsTitle.contains("?")) {
                         newsTitle = newsTitle.replace("?", "");
                     }
+                    if (newsTitle.contains("$")) {
+                        newsTitle = newsTitle.replace("$", "");
+                    }
+                    if (newsTitle.contains("€")) {
+                        newsTitle = newsTitle.replace("€", "");
+                    }
+                    if (newsTitle.contains("£")) {
+                        newsTitle = newsTitle.replace("£", "");
+                    }
 
                     newsTitlesList.set(i, newsTitle);
                     newsTitlesSb.append(newsTitle).append(". ");
                 }
                 String newsTitlesString = newsTitlesSb.toString().trim();
 
+                // TODO: move this sentiment analysis process somewhere where will be done only once (e.g. MainActivity or NewsViewModel)
                 List<Sentiment> sentiments = activity.performSentimentAnalysisClient(newsTitlesString);
                 if (sentiments.size() == newsList.size()) {
                     Iterator<News> newsIterator = newsList.iterator();
