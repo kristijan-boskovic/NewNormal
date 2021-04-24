@@ -59,63 +59,45 @@ public class NewsFragment extends Fragment {
                 }
 
                 StringBuilder newsTitlesSb = new StringBuilder();
-//                for (String newsTitle : newsTitlesList) {
-//                Iterator<String> newsTitleIterator = newsTitlesList.iterator();
-//                while (newsTitleIterator.hasNext()) {
-//                    String newsTitle = newsTitleIterator.next();
-//                    if ((newsTitle.contains(". ") || newsTitle.contains(".' ") || newsTitle.contains(".\" ")) && newsTitle.indexOf(".") < newsTitle.length() - 1) {
-//                        newsList.removeIf(e -> newsTitle.equals(e.getTitle())); // Remove news articles with dot inside text.
-//                        newsTitleIterator.remove();
-//                    }
-//                    else {
-//                        if (newsTitle.endsWith(".") || newsTitle.endsWith("?") || newsTitle.endsWith("!")) {
-//                            if (newsTitle.endsWith("...")) {
-//                                newsTitlesSb.append(newsTitle.substring(0, newsTitle.length() - 2)).append(" ");
-//                            }
-//                            else {
-//                                newsTitlesSb.append(newsTitle).append(" ");
-//                            }
-//                        }
-//                        else {
-//                            newsTitlesSb.append(newsTitle).append(". ");
-//                        }
-//                    }
-//                }
-////                }
                 for (int i = 0; i < newsTitlesList.size(); i++) {
                     String newsTitle = newsTitlesList.get(i);
 
-                    if (newsTitle.contains(".")) {
-                        newsTitle = newsTitle.replace(".", "");
+                    if (Character.isDigit(newsTitle.charAt(0))) { // Remove articles starting with number as they case invalid sentiment sentence reads
+                        newsList.remove(i);
                     }
-                    if (newsTitle.contains("!")) {
-                        newsTitle = newsTitle.replace("!", "");
-                    }
-                    if (newsTitle.contains("?")) {
-                        newsTitle = newsTitle.replace("?", "");
-                    }
-                    if (newsTitle.contains("$")) {
-                        newsTitle = newsTitle.replace("$", "");
-                    }
-                    if (newsTitle.contains("€")) {
-                        newsTitle = newsTitle.replace("€", "");
-                    }
-                    if (newsTitle.contains("£")) {
-                        newsTitle = newsTitle.replace("£", "");
-                    }
+                    else { // Adjust these signs in news articles, as they case invalid sentiment sentence reads
+                        if (newsTitle.contains(".")) {
+                            newsTitle = newsTitle.replace(".", "");
+                        }
+                        if (newsTitle.contains("!")) {
+                            newsTitle = newsTitle.replace("!", "");
+                        }
+                        if (newsTitle.contains("?")) {
+                            newsTitle = newsTitle.replace("?", "");
+                        }
+                        if (newsTitle.contains("$")) {
+                            newsTitle = newsTitle.replace("$", "dollars");
+                        }
+                        if (newsTitle.contains("€")) {
+                            newsTitle = newsTitle.replace("€", "euros");
+                        }
+                        if (newsTitle.contains("£")) {
+                            newsTitle = newsTitle.replace("£", "pounds");
+                        }
 
-                    newsTitlesList.set(i, newsTitle);
-                    newsTitlesSb.append(newsTitle).append(". ");
+                        newsTitlesList.set(i, newsTitle);
+                        newsTitlesSb.append(newsTitle).append(". ");
+                    }
                 }
                 String newsTitlesString = newsTitlesSb.toString().trim();
 
                 // TODO: move this sentiment analysis process somewhere where will be done only once (e.g. MainActivity or NewsViewModel)
                 List<Sentiment> sentiments = activity.performSentimentAnalysisClient(newsTitlesString);
-                if (sentiments.size() == newsList.size()) {
+                if (sentiments.size() == newsList.size()) { // Check if number of sentiments match number of news articles (sentiment analysis done correctly)
                     Iterator<News> newsIterator = newsList.iterator();
                     int index = 0;
                     while (newsIterator.hasNext()) {
-                        News news = newsIterator.next();
+                        newsIterator.next();
                         Sentiment sentiment = sentiments.get(index);
                         float sentimentScore = 0;
                         if (sentiment != null) {

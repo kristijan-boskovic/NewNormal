@@ -49,7 +49,7 @@ public class NewsViewModel extends AndroidViewModel {
                         .sources("google-news,bbc-news,independent,abc-news,cbs-news,cnn,medical-news-today,nbc-news,time")
                         .sortBy("publishedAt")
                         .pageSize(100)
-//                        .page(4)
+//                        .page(1)
                         .build(),
 //        newsApiClient.getTopHeadlines(
 //                new TopHeadlinesRequest.Builder()
