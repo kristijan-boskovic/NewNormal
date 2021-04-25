@@ -19,6 +19,12 @@ import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
 import com.kwabenaberko.newsapilib.models.request.TopHeadlinesRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,9 +42,9 @@ public class NewsViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public LiveData<List<News>> getNewsFromApi() {
-        final MutableLiveData<List<News>> newsMutableList = new MutableLiveData<>();
-        final List<News> newsList = new ArrayList<>();
+    public LiveData<List<News>> getWorldNewsFromApi() {
+        final MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
+        final List<News> worldNewsList = new ArrayList<>();
         final LinkedHashSet<News> hashSet = new LinkedHashSet<>();
 
         // /v2/everything
@@ -63,10 +69,10 @@ public class NewsViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(ArticleResponse response) {
                         List<Article> articles = response.getArticles();
-                        fillNewsList(articles, newsList, hashSet);
+                        fillNewsList(articles, worldNewsList, hashSet);
                         HashSet<String> seen = new HashSet<>();
-                        newsList.removeIf(e -> !seen.add(e.getDescription())); // Remove duplicate news articles (same articles with different URLs)
-                        newsMutableList.setValue(newsList);
+                        worldNewsList.removeIf(e -> !seen.add(e.getDescription())); // Remove duplicate news articles (same articles with different URLs)
+                        worldNewsMutableList.setValue(worldNewsList);
                     }
 
                     @Override
@@ -75,7 +81,41 @@ public class NewsViewModel extends AndroidViewModel {
                     }
                 }
         );
-        return newsMutableList;
+        return worldNewsMutableList;
+    }
+
+    public LiveData<List<News>> getCroatianNewsFromScraping() throws IOException {
+        final MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
+        final List<News> croatianNewsList = new ArrayList<>();
+
+        for (int i = 1; i < 11; i++) { // News from first 10 pages (total of 100 news)
+            String url = "https://www.total-croatia-news.com/tag/coronavirus/page-" + i;
+            Document doc = Jsoup.connect(url)
+                    .timeout(6000)
+                    .get();
+            Elements elements = doc.select("div.listingPage-items");
+
+            for (Element element : elements.select("div.listingPage-item")) { // News from current page
+                String imageUrlPath = element.select("div.img-focus img").attr("style");
+                String s1 = (imageUrlPath.substring(imageUrlPath.indexOf("/")));
+                String s2 = (s1.substring(0, s1.length() - 3)).trim();
+                String imageUrlFullPath = "https://www.total-croatia-news.com" + s2;
+
+                String urlPath = element.select("h2.listingPage-item-title a").attr("href");
+                String urlFullPath = "https://www.total-croatia-news.com" + urlPath;
+
+                String date = element.select("div.listingPage-item-content span.listingPage-item-date").text(); // TODO: reformat just like world news date
+
+                String title = element.select("div.listingPage-item-content h2.listingPage-item-title").text();
+
+                String descriptionFull = element.select("div.listingPage-item-content div.listingPage-item-introtext").text();
+                String descriptionShort = descriptionFull.substring(0, 300);
+            }
+
+            // TODO: fill list with news
+        }
+
+        return croatianNewsMutableList;
     }
 
     private void fillNewsList(List<Article> articles, List<News> newsList, LinkedHashSet<News> hashSet) {

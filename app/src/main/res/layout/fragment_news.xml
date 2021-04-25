@@ -45,9 +45,6 @@
             android:paddingRight="@dimen/normalPadding"
             android:paddingLeft="@dimen/normalPadding">
 
-<!--            <include-->
-<!--                layout="@layout/layout_featured_news_article"/>-->
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_news_articles"
                 android:layout_width="match_parent"

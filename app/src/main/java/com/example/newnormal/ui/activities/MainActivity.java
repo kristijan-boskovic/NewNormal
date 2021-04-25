@@ -1,6 +1,5 @@
 package com.example.newnormal.ui.activities;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -16,7 +15,8 @@ import com.example.newnormal.R;
 import com.example.newnormal.data.models.News;
 import com.example.newnormal.ui.BottomNavigationBehavior;
 import com.example.newnormal.ui.fragments.BlankFragment;
-import com.example.newnormal.ui.fragments.NewsFragment;
+import com.example.newnormal.ui.fragments.CroatianNewsFragment;
+import com.example.newnormal.ui.fragments.WorldNewsFragment;
 import com.example.newnormal.vm.NewsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                     switchToBlankFragment();
                     return true;
                 case R.id.navigationHome:
-                    switchToNewsFragment();
+                    switchToWorldNewsFragment();
                     return true;
                 case R.id.navigationSearch:
                     switchToBlankFragment();
@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    MutableLiveData<List<News>> newsList = new MutableLiveData<>();
+    MutableLiveData<List<News>> worldNewsList = new MutableLiveData<>();
+    MutableLiveData<List<News>> croatianNewsList = new MutableLiveData<>();
     List<Sentiment> sentiments = new ArrayList<>();
 
     @Override
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
 
-        newsList = (MutableLiveData<List<News>>) getNewsFromApi();
+        worldNewsList = (MutableLiveData<List<News>>) getNewsFromApi();
 
         // create the language client
         try {
@@ -123,9 +124,14 @@ public class MainActivity extends AppCompatActivity {
         mLanguageClient.shutdown();
     }
 
-    public void switchToNewsFragment() {
+    public void switchToWorldNewsFragment() {
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, new NewsFragment()).commit();
+        manager.beginTransaction().replace(R.id.container, new WorldNewsFragment()).commit();
+    }
+
+    public void switchToCroatianNewsFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.container, new CroatianNewsFragment()).commit();
     }
 
     public void switchToBlankFragment() {
@@ -135,10 +141,19 @@ public class MainActivity extends AppCompatActivity {
 
     public LiveData<List<News>> getNewsFromApi() {
         NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
-        return newsViewModel.getNewsFromApi();
+        return newsViewModel.getWorldNewsFromApi();
     }
 
-    public LiveData<List<News>> getNewsList() {
-        return newsList;
+    public LiveData<List<News>> getWorldNewsList() {
+        return worldNewsList;
+    }
+
+    public LiveData<List<News>> getNewsFromScraping() throws IOException {
+        NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+        return newsViewModel.getCroatianNewsFromScraping();
+    }
+
+    public LiveData<List<News>> getCroatianNewsList() {
+        return croatianNewsList;
     }
 }
