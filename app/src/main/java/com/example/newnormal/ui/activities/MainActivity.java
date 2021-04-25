@@ -14,17 +14,12 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.News;
-//import com.example.newnormal.data.models.SentimentInfo;
 import com.example.newnormal.ui.BottomNavigationBehavior;
-//import com.example.newnormal.ui.fragments.ApiFragment;
 import com.example.newnormal.ui.fragments.BlankFragment;
 import com.example.newnormal.ui.fragments.NewsFragment;
-//import com.example.newnormal.util.AccessTokenLoader;
 import com.example.newnormal.vm.NewsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.language.v1.AnalyzeSentimentRequest;
 import com.google.cloud.language.v1.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -35,7 +30,6 @@ import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private LanguageServiceClient mLanguageClient;

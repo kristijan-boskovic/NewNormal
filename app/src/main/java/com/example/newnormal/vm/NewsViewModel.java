@@ -63,31 +63,7 @@ public class NewsViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(ArticleResponse response) {
                         List<Article> articles = response.getArticles();
-                        for (Article article : articles) {
-                            String newsUrl = article.getUrl();
-                            String newsTitle = article.getTitle();
-                            String newsDescription = article.getDescription();
-                            String newsPublishingTimeStamp = article.getPublishedAt();
-                            @SuppressLint("SimpleDateFormat")
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                            Date date = null;
-                            try {
-                                date = sdf.parse(newsPublishingTimeStamp);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            @SuppressLint("SimpleDateFormat")
-                            Format formatter = new SimpleDateFormat("dd.M.yyyy. HH:mm:ss");
-                            String newsPublishingDate = formatter.format(date);
-                            String newsImageUrl = article.getUrlToImage();
-                            String newsAuthor = article.getAuthor();
-                            String newsSource = article.getSource().getName();
-                            News news = new News(newsUrl, newsTitle, newsDescription, newsAuthor, newsSource, newsPublishingDate, newsImageUrl);
-                            if (hashSet.add(news)) {
-                                newsList.add(news);
-                            }
-//                            newsList.add(news);
-                        }
+                        fillNewsList(articles, newsList, hashSet);
                         HashSet<String> seen = new HashSet<>();
                         newsList.removeIf(e -> !seen.add(e.getDescription())); // Remove duplicate news articles (same articles with different URLs)
                         newsMutableList.setValue(newsList);
@@ -100,5 +76,32 @@ public class NewsViewModel extends AndroidViewModel {
                 }
         );
         return newsMutableList;
+    }
+
+    private void fillNewsList(List<Article> articles, List<News> newsList, LinkedHashSet<News> hashSet) {
+        for (Article article : articles) {
+            String newsUrl = article.getUrl();
+            String newsTitle = article.getTitle();
+            String newsDescription = article.getDescription();
+            String newsPublishingTimeStamp = article.getPublishedAt();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date date = null;
+            try {
+                date = sdf.parse(newsPublishingTimeStamp);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            @SuppressLint("SimpleDateFormat")
+            Format formatter = new SimpleDateFormat("dd.M.yyyy. HH:mm:ss");
+            String newsPublishingDate = formatter.format(date);
+            String newsImageUrl = article.getUrlToImage();
+            String newsAuthor = article.getAuthor();
+            String newsSource = article.getSource().getName();
+            News news = new News(newsUrl, newsTitle, newsDescription, newsAuthor, newsSource, newsPublishingDate, newsImageUrl);
+            if (hashSet.add(news)) {
+                newsList.add(news);
+            }
+        }
     }
 }
