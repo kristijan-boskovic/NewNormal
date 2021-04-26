@@ -29,11 +29,12 @@ import com.google.cloud.language.v1.Sentiment;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
-    private LanguageServiceClient mLanguageClient;
+    private static LanguageServiceClient mLanguageClient;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -58,9 +59,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    MutableLiveData<List<News>> worldNewsList = new MutableLiveData<>();
-    MutableLiveData<List<News>> croatianNewsList = new MutableLiveData<>();
-//    List<Sentiment> sentiments = new ArrayList<>();
+    MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
+    MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,17 +78,6 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
 
-        try {
-            worldNewsList = (MutableLiveData<List<News>>) getNewsFromApi();
-            croatianNewsList = (MutableLiveData<List<News>>) getNewsFromScraping();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
         // create the language client
         try {
             mLanguageClient = LanguageServiceClient.create(
@@ -101,13 +90,22 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new IllegalStateException("Unable to create a language client", e);
         }
+
+        try {
+            worldNewsMutableList = (MutableLiveData<List<News>>) getNewsFromApi();
+            croatianNewsMutableList = (MutableLiveData<List<News>>) getNewsFromScraping();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
-    public List<Sentiment> performSentimentAnalysisClient(String text) {
+    public static List<Sentiment> performSentimentAnalysisClient(String text) {
         return analyzeSentiment(text);
     }
 
-    private List<Sentiment> analyzeSentiment(String text) {
+    private static List<Sentiment> analyzeSentiment(String text) {
         List<Sentiment> sentiments = new ArrayList<>();
 
         Document document = Document.newBuilder()
@@ -154,19 +152,45 @@ public class MainActivity extends AppCompatActivity {
 
     public LiveData<List<News>> getNewsFromApi() {
         NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+
         return newsViewModel.getWorldNewsFromApi();
     }
 
-    public LiveData<List<News>> getWorldNewsList() {
-        return worldNewsList;
-    }
-
-    public LiveData<List<News>> getNewsFromScraping() throws IOException, ExecutionException, InterruptedException {
+    public LiveData<List<News>> getNewsFromScraping() throws InterruptedException, ExecutionException {
         NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+
         return newsViewModel.getCroatianNewsFromScraping();
     }
 
-    public LiveData<List<News>> getCroatianNewsList() {
-        return croatianNewsList;
+    public LiveData<List<News>> getWorldNewsMutableList() {
+        return worldNewsMutableList;
+    }
+
+    public LiveData<List<News>> getCroatianNewsMutableList() {
+        return croatianNewsMutableList;
+    }
+
+    public static void filterPositiveNewsTitles(List<News> newsList, String newsTitlesString) {
+        // TODO: move this sentiment analysis process somewhere where will be done only once (e.g. MainActivity or NewsViewModel)
+        List<Sentiment> sentiments = performSentimentAnalysisClient(newsTitlesString);
+        if (sentiments.size() == newsList.size()) { // Check if number of sentiments match number of news articles (sentiment analysis done correctly)
+            Iterator<News> newsIterator = newsList.iterator();
+            int index = 0;
+            while (newsIterator.hasNext()) {
+                newsIterator.next();
+                Sentiment sentiment = sentiments.get(index);
+                float sentimentScore = 0;
+                if (sentiment != null) {
+                    sentimentScore = sentiment.getScore();
+                }
+                if (sentimentScore <= 0) {
+                    newsIterator.remove();
+                }
+                index++;
+            }
+        }
+        else {
+//            Toast.makeText(getActivity(),"Sentiment analysis failed, displaying all news articles!",Toast.LENGTH_LONG).show();
+        }
     }
 }

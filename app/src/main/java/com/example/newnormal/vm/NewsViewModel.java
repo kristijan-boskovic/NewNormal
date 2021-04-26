@@ -12,6 +12,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.newnormal.data.models.News;
+import com.example.newnormal.ui.activities.MainActivity;
+import com.google.cloud.language.v1.Sentiment;
 import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.Article;
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
@@ -27,11 +29,12 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.ExecutionException;
 
 public class NewsViewModel extends AndroidViewModel {
@@ -43,8 +46,6 @@ public class NewsViewModel extends AndroidViewModel {
 
     public LiveData<List<News>> getWorldNewsFromApi() {
         final MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
-        final List<News> worldNewsList = new ArrayList<>();
-        final LinkedHashSet<News> hashSet = new LinkedHashSet<>();
 
         // /v2/everything
         newsApiClient.getEverything(
@@ -54,24 +55,21 @@ public class NewsViewModel extends AndroidViewModel {
                         .sources("google-news,bbc-news,independent,abc-news,cbs-news,cnn,medical-news-today,nbc-news,time")
                         .sortBy("publishedAt")
                         .pageSize(100)
-//                        .page(1)
                         .build(),
-//        newsApiClient.getTopHeadlines(
-//                new TopHeadlinesRequest.Builder()
-//                        .q("covid")
-//                        .language("en")
-//                        .sources("google-news,bbc-news,independent,abc-news,cbs-news,cnn,medical-news-today,nbc-news,time")
-//                        .category("health")
-//                        .pageSize(100)
-//                        .build(),
                 new NewsApiClient.ArticlesResponseCallback() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(ArticleResponse response) {
                         List<Article> articles = response.getArticles();
+                        List<News> worldNewsList = new ArrayList<>();
+                        LinkedHashSet<News> hashSet = new LinkedHashSet<>();
+
                         fillWorldNewsList(articles, worldNewsList, hashSet);
                         HashSet<String> seen = new HashSet<>();
                         worldNewsList.removeIf(e -> !seen.add(e.getDescription())); // Remove duplicate news articles (same articles with different URLs)
+                        String newsTitlesString = mergeAllNewsTitles(worldNewsList);
+                        MainActivity.filterPositiveNewsTitles(worldNewsList, newsTitlesString);
+
                         worldNewsMutableList.setValue(worldNewsList);
                     }
 
@@ -84,15 +82,18 @@ public class NewsViewModel extends AndroidViewModel {
         return worldNewsMutableList;
     }
 
-    public LiveData<List<News>> getCroatianNewsFromScraping() throws IOException, ExecutionException, InterruptedException {
-        final MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
-        final List<News> croatianNewsList = new ArrayList<>();
+    public LiveData<List<News>> getCroatianNewsFromScraping() throws ExecutionException, InterruptedException {
+        List<News> croatianNewsList = new ArrayList<>();
 
         for (int i = 1; i < 11; i++) { // News from first 10 pages (total of 100 news)
             String url = "https://www.total-croatia-news.com/tag/coronavirus/page-" + i;
-            Elements elements = new MyTask().execute(url).get();
-            fillCroatianNewsList(elements, croatianNewsList);
+            Elements elements = new CroatianNewsJsoupTask().execute(url).get();
+            croatianNewsList.addAll(fillCroatianNewsList(elements));
         }
+
+        MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
+        String newsTitlesString = mergeAllNewsTitles(croatianNewsList);
+        MainActivity.filterPositiveNewsTitles(croatianNewsList, newsTitlesString);
         croatianNewsMutableList.setValue(croatianNewsList);
 
         return croatianNewsMutableList;
@@ -113,7 +114,6 @@ public class NewsViewModel extends AndroidViewModel {
                 e.printStackTrace();
             }
             @SuppressLint("SimpleDateFormat")
-//            Format formatter = new SimpleDateFormat("dd.M.yyyy. HH:mm:ss");
             Format formatter = new SimpleDateFormat("EEEE, d MMMM y");
             String newsPublishingDate = formatter.format(date);
             String newsImageUrl = article.getUrlToImage();
@@ -126,7 +126,9 @@ public class NewsViewModel extends AndroidViewModel {
         }
     }
 
-    private void fillCroatianNewsList(Elements elements, List<News> croatianNewsList) {
+    private List<News> fillCroatianNewsList(Elements elements) {
+        List<News> croatianNewsList = new ArrayList<>();
+
         for (Element element : elements.select("div.listingPage-item")) { // News from current page
             String newsImageUrlPath = element.select("div.img-focus img").attr("style");
             String s1 = (newsImageUrlPath.substring(newsImageUrlPath.indexOf("/")));
@@ -136,7 +138,7 @@ public class NewsViewModel extends AndroidViewModel {
             String newsUrlPath = element.select("h2.listingPage-item-title a").attr("href");
             String newsUrlFull = "https://www.total-croatia-news.com" + newsUrlPath;
 
-            String newsPublishingDate = element.select("div.listingPage-item-content span.listingPage-item-date").text(); // TODO: reformat just like world news date
+            String newsPublishingDate = element.select("div.listingPage-item-content span.listingPage-item-date").text();
 
             String newsTitle = element.select("div.listingPage-item-content h2.listingPage-item-title").text();
 
@@ -146,9 +148,11 @@ public class NewsViewModel extends AndroidViewModel {
             News news = new News(newsUrlFull, newsTitle, newsDescriptionShort, "Total Croatia News", newsPublishingDate, newsImageUrlFull);
             croatianNewsList.add(news);
         }
+
+        return croatianNewsList;
     }
 
-    private static class MyTask extends AsyncTask<String, Void, Elements> {
+    private static class CroatianNewsJsoupTask extends AsyncTask<String, Void, Elements> {
         @Override
         protected Elements doInBackground(String... url) {
             Document doc = null;
@@ -170,5 +174,47 @@ public class NewsViewModel extends AndroidViewModel {
 //            //if you had a ui element, you could display the title
 //            ((TextView)findViewById (R.id.myTextView)).setText (result);
 //        }
+    }
+
+    private String mergeAllNewsTitles(List<News> newsList) {
+        List<String> newsTitlesList = new ArrayList<>();
+        for (News news : newsList) {
+            newsTitlesList.add(news.getTitle());
+        }
+
+        StringBuilder newsTitlesSb = new StringBuilder();
+        ListIterator<String> newsTitlesIterator = newsTitlesList.listIterator();
+        while (newsTitlesIterator.hasNext()) {
+            int index = newsTitlesIterator.nextIndex();
+            String newsTitle = newsTitlesIterator.next();
+
+            if (Character.isDigit(newsTitle.charAt(0))) { // Remove articles starting with number as they case invalid sentiment sentence reads
+                newsList.remove(index);
+                newsTitlesIterator.remove();
+            } else { // Adjust these signs in news articles, as they case invalid sentiment sentence reads
+                if (newsTitle.contains(".")) {
+                    newsTitle = newsTitle.replace(".", "");
+                }
+                if (newsTitle.contains("!")) {
+                    newsTitle = newsTitle.replace("!", "");
+                }
+                if (newsTitle.contains("?")) {
+                    newsTitle = newsTitle.replace("?", "");
+                }
+                if (newsTitle.contains("$")) {
+                    newsTitle = newsTitle.replace("$", " dollars");
+                }
+                if (newsTitle.contains("€")) {
+                    newsTitle = newsTitle.replace("€", " euros");
+                }
+                if (newsTitle.contains("£")) {
+                    newsTitle = newsTitle.replace("£", " pounds");
+                }
+
+                newsTitlesList.set(index, newsTitle);
+                newsTitlesSb.append(newsTitle).append(". ");
+            }
+        }
+        return newsTitlesSb.toString().trim();
     }
 }

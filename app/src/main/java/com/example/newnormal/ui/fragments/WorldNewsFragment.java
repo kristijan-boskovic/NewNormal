@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,7 +24,7 @@ import com.example.newnormal.ui.adapters.NewsAdapter;
 
 import java.util.List;
 
-public class WorldNewsFragment extends BaseNewsFragment {
+public class WorldNewsFragment extends Fragment {
     private static final int NEWS_ARTICLE_REQUEST = 1;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,16 +40,12 @@ public class WorldNewsFragment extends BaseNewsFragment {
         // TODO: replace this with more loosely coupled solution (search on Google: "send data from activity to fragment")
         final MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
-        LiveData<List<News>> newsList = activity.getWorldNewsList();
+        LiveData<List<News>> newsList = activity.getWorldNewsMutableList();
 
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChanged(@Nullable List<News> newsList) {
-                // TODO: add ProgressDialog (async)
-                assert newsList != null;
-                String newsTitlesString = mergeAllNewsTitles(newsList);
-                filterPositiveNewsTitles(activity, newsList, newsTitlesString);
                 newsAdapter.setNews(newsList);
             }
         });
