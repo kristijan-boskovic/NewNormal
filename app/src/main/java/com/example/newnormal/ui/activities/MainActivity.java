@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     switchToBlankFragment();
                     return true;
             }
+
             return false;
         }
     };
@@ -98,6 +99,29 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void filterPositiveNewsTitles(List<News> newsList, String newsTitlesString) {
+        List<Sentiment> sentiments = performSentimentAnalysisClient(newsTitlesString);
+        if (sentiments.size() == newsList.size()) { // Check if number of sentiments match number of news articles (sentiment analysis done correctly)
+            Iterator<News> newsIterator = newsList.iterator();
+            int index = 0;
+            while (newsIterator.hasNext()) {
+                newsIterator.next();
+                Sentiment sentiment = sentiments.get(index);
+                float sentimentScore = 0;
+                if (sentiment != null) {
+                    sentimentScore = sentiment.getScore();
+                }
+                if (sentimentScore <= 0) {
+                    newsIterator.remove();
+                }
+                index++;
+            }
+        }
+        else {
+//            Toast.makeText(getActivity(),"Sentiment analysis failed, displaying all news articles!",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -168,29 +192,5 @@ public class MainActivity extends AppCompatActivity {
 
     public LiveData<List<News>> getCroatianNewsMutableList() {
         return croatianNewsMutableList;
-    }
-
-    public static void filterPositiveNewsTitles(List<News> newsList, String newsTitlesString) {
-        // TODO: move this sentiment analysis process somewhere where will be done only once (e.g. MainActivity or NewsViewModel)
-        List<Sentiment> sentiments = performSentimentAnalysisClient(newsTitlesString);
-        if (sentiments.size() == newsList.size()) { // Check if number of sentiments match number of news articles (sentiment analysis done correctly)
-            Iterator<News> newsIterator = newsList.iterator();
-            int index = 0;
-            while (newsIterator.hasNext()) {
-                newsIterator.next();
-                Sentiment sentiment = sentiments.get(index);
-                float sentimentScore = 0;
-                if (sentiment != null) {
-                    sentimentScore = sentiment.getScore();
-                }
-                if (sentimentScore <= 0) {
-                    newsIterator.remove();
-                }
-                index++;
-            }
-        }
-        else {
-//            Toast.makeText(getActivity(),"Sentiment analysis failed, displaying all news articles!",Toast.LENGTH_LONG).show();
-        }
     }
 }

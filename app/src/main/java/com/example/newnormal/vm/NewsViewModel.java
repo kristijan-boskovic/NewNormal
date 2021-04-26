@@ -18,6 +18,8 @@ import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.Article;
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -79,6 +81,7 @@ public class NewsViewModel extends AndroidViewModel {
                     }
                 }
         );
+
         return worldNewsMutableList;
     }
 
@@ -215,6 +218,7 @@ public class NewsViewModel extends AndroidViewModel {
                 newsTitlesSb.append(newsTitle).append(". ");
             }
         }
+
         return newsTitlesSb.toString().trim();
     }
 }
