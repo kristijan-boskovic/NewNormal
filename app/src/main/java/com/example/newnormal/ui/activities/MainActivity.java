@@ -30,6 +30,7 @@ import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private LanguageServiceClient mLanguageClient;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     MutableLiveData<List<News>> worldNewsList = new MutableLiveData<>();
     MutableLiveData<List<News>> croatianNewsList = new MutableLiveData<>();
-    List<Sentiment> sentiments = new ArrayList<>();
+//    List<Sentiment> sentiments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,16 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
 
-        worldNewsList = (MutableLiveData<List<News>>) getNewsFromApi();
+        try {
+            worldNewsList = (MutableLiveData<List<News>>) getNewsFromApi();
+            croatianNewsList = (MutableLiveData<List<News>>) getNewsFromScraping();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
         // create the language client
         try {
@@ -94,11 +104,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<Sentiment> performSentimentAnalysisClient(String text) {
-        analyzeSentiment(text);
-        return sentiments;
+        return analyzeSentiment(text);
     }
 
-    private void analyzeSentiment(String text) {
+    private List<Sentiment> analyzeSentiment(String text) {
+        List<Sentiment> sentiments = new ArrayList<>();
+
         Document document = Document.newBuilder()
                 .setContent(text)
                 .setType(Document.Type.PLAIN_TEXT)
@@ -114,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
+
+        return sentiments;
     }
 
     @Override
@@ -148,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         return worldNewsList;
     }
 
-    public LiveData<List<News>> getNewsFromScraping() throws IOException {
+    public LiveData<List<News>> getNewsFromScraping() throws IOException, ExecutionException, InterruptedException {
         NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
         return newsViewModel.getCroatianNewsFromScraping();
     }
