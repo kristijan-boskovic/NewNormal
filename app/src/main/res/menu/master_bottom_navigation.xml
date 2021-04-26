@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigationHome"
+        android:id="@+id/navigationWorldNews"
         android:icon="@drawable/ic_home"
-        android:title="News" />
+        android:title="@string/world_news" />
 
     <item
-        android:id="@+id/navigationMenu"
+        android:id="@+id/navigationCroatianNews"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="TODO #1" />
+        android:title="@string/cro_news" />
 
     <item
-        android:id="@+id/navigationMyCourses"
+        android:id="@+id/navigationToDoTwo"
         android:icon="@drawable/ic_effort"
         android:title="TODO #2" />
 
     <item
-        android:id="@+id/navigationSearch"
+        android:id="@+id/navigationToDoThree"
         android:icon="@android:drawable/ic_menu_search"
         android:title="TODO #3" />
 </menu>

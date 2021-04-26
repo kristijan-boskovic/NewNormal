@@ -40,16 +40,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigationMyCourses:
-                    switchToBlankFragment();
-                    return true;
-                case R.id.navigationHome:
+                case R.id.navigationWorldNews:
                     switchToWorldNewsFragment();
                     return true;
-                case R.id.navigationSearch:
+                case R.id.navigationCroatianNews:
+                    switchToCroatianNewsFragment();
+                    return true;
+                case R.id.navigationToDoTwo:
                     switchToBlankFragment();
                     return true;
-                case R.id.navigationMenu:
+                case R.id.navigationToDoThree:
                     switchToBlankFragment();
                     return true;
             }
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        bottomNavigationView.setSelectedItemId(R.id.navigationHome);
+        bottomNavigationView.setSelectedItemId(R.id.navigationWorldNews);
 
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());

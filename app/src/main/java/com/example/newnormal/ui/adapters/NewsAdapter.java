@@ -32,13 +32,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         News currentNews = newsList.get(position);
         holder.tvNewsTitle.setText(currentNews.getTitle());
         holder.tvNewsDescription.setText(currentNews.getDescription());
-//        holder.tvNewsSource.setText(currentNews.getSource());
+        holder.tvNewsSource.setText(currentNews.getSource());
         holder.tvNewsPublishingDate.setText(currentNews.getPublishingDate());
         Picasso.get()
                 .load(currentNews.getImageUrl())
                 .placeholder(R.drawable.ic_menu_gallery)
                 .error(R.drawable.ic_menu_gallery)
-                .resize(100, 100)
+                .fit()
                 .centerCrop()
                 .into(holder.ivNewsImage);
     }
@@ -58,17 +58,17 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     class NewsHolder extends RecyclerView.ViewHolder {
-        private TextView tvNewsTitle;
-        private TextView tvNewsDescription;
-//        private TextView tvNewsSource;
-        private TextView tvNewsPublishingDate;
-        private ImageView ivNewsImage;
+        private final TextView tvNewsTitle;
+        private final TextView tvNewsDescription;
+        private final TextView tvNewsSource;
+        private final TextView tvNewsPublishingDate;
+        private final ImageView ivNewsImage;
 
         public NewsHolder(@NonNull View itemView) {
             super(itemView);
             tvNewsTitle = itemView.findViewById(R.id.tv_news_title);
             tvNewsDescription = itemView.findViewById(R.id.tv_news_description);
-//            tvNewsSource = itemView.findViewById(R.id.tv_news_source);
+            tvNewsSource = itemView.findViewById(R.id.tv_news_source);
             tvNewsPublishingDate = itemView.findViewById(R.id.tv_news_publishing_date);
             ivNewsImage = itemView.findViewById(R.id.iv_news_image);
 

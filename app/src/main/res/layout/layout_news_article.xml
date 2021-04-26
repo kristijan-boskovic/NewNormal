@@ -37,19 +37,6 @@
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@id/iv_news_image" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/tv_news_source"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/news_source"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:textColor="#8E909A"-->
-<!--        android:textSize="11sp"-->
-<!--        android:layout_marginLeft="5dp"-->
-<!--        android:layout_toLeftOf="@id/tv_news_publishing_date"-->
-<!--        android:layout_marginStart="5dp"-->
-<!--        android:layout_toRightOf="@id/iv_news_image" />-->
-
     <TextView
         android:id="@+id/tv_news_publishing_date"
         android:layout_width="wrap_content"
@@ -62,4 +49,17 @@
         android:layout_toRightOf="@id/iv_news_image"
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@id/iv_news_image" />
+
+    <TextView
+        android:id="@+id/tv_news_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/news_source"
+        android:layout_alignParentBottom="true"
+        android:textColor="#8E909A"
+        android:textSize="11sp"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="5dp" />
 </RelativeLayout>

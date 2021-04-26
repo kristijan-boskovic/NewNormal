@@ -61,6 +61,7 @@ public class NewsViewModel extends AndroidViewModel {
 //                new TopHeadlinesRequest.Builder()
 //                        .q("covid")
 //                        .language("en")
+//                        .sources("google-news,bbc-news,independent,abc-news,cbs-news,cnn,medical-news-today,nbc-news,time")
 //                        .category("health")
 //                        .pageSize(100)
 //                        .build(),
