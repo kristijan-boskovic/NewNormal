@@ -44,6 +44,7 @@ public class CroatianNewsFragment extends Fragment {
         // TODO: replace this with more loosely coupled solution (search on Google: "send data from activity to fragment")
         final MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
+        activity.setTitle(R.string.croatian_covid_news);
         LiveData<List<News>> newsList = activity.getCroatianNewsMutableList();
 
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {

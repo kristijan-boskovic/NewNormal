@@ -44,6 +44,7 @@ public class WorldNewsFragment extends Fragment {
         // TODO: replace this with more loosely coupled solution (search on Google: "send data from activity to fragment")
         final MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
+        activity.setTitle(R.string.world_covid_news);
         LiveData<List<News>> newsList = activity.getWorldNewsMutableList();
 
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {

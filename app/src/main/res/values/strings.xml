@@ -89,5 +89,7 @@
     <string name="news_source">News source</string>
     <string name="world_news">World news</string>
     <string name="croatian_news">Croatian news</string>
+    <string name="world_covid_news">World COVID-19 news</string>
+    <string name="croatian_covid_news">Croatian COVID-19 news</string>
     <string name="search">Search</string>
 </resources>
