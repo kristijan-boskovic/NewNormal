@@ -88,7 +88,7 @@ public class NewsViewModel extends AndroidViewModel {
     public LiveData<List<News>> getCroatianNewsFromScraping() throws ExecutionException, InterruptedException {
         List<News> croatianNewsList = new ArrayList<>();
 
-        for (int i = 1; i < 2; i++) { // News from first 5 pages (total of 50 news)
+        for (int i = 1; i < 2; i++) {
             String url = "https://www.total-croatia-news.com/tag/coronavirus/page-" + i;
             Elements elements = new CroatianNewsJsoupTask().execute(url).get();
             croatianNewsList.addAll(fillCroatianNewsList(elements));

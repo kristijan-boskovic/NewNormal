@@ -3,6 +3,8 @@ package com.example.newnormal.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,10 +16,12 @@ import com.example.newnormal.data.models.News;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
-    private List<News> newsList = new ArrayList<>();
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> implements Filterable {
+    private List<News> newsList;
+    private List<News> newsListAll;
     private OnItemClickListener listener;
 
     @NonNull
@@ -50,6 +54,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     public void setNews(List<News> newsList) {
         this.newsList = newsList;
+        this.newsListAll = new ArrayList<>(newsList);
         notifyDataSetChanged();
     }
 
@@ -90,5 +95,41 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    Filter filter = new Filter() {
+        // Runs on background thread
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<News> filteredList = new ArrayList<>();
+
+            if (constraint.toString().isEmpty()) {
+                filteredList.addAll(newsListAll);
+            }
+            else {
+                for (News news : newsListAll) {
+                    if (news.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        filteredList.add(news);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+
+            return filterResults;
+        }
+
+        // Runs on UI thread
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            newsList.clear();
+            newsList.addAll((Collection<? extends News>) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    @Override
+    public Filter getFilter() {
+        return filter;
     }
 }
