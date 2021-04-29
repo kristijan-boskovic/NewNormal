@@ -13,13 +13,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.newnormal.data.models.News;
 import com.example.newnormal.ui.activities.MainActivity;
-import com.google.cloud.language.v1.Sentiment;
 import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.Article;
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -88,7 +84,7 @@ public class NewsViewModel extends AndroidViewModel {
     public LiveData<List<News>> getCroatianNewsFromScraping() throws ExecutionException, InterruptedException {
         List<News> croatianNewsList = new ArrayList<>();
 
-        for (int i = 1; i < 2; i++) {
+        for (int i = 1; i < 11; i++) {
             String url = "https://www.total-croatia-news.com/tag/coronavirus/page-" + i;
             Elements elements = new CroatianNewsJsoupTask().execute(url).get();
             croatianNewsList.addAll(fillCroatianNewsList(elements));
@@ -167,9 +163,8 @@ public class NewsViewModel extends AndroidViewModel {
                 e.printStackTrace();
             }
             assert doc != null;
-            Elements elements = doc.select("div.listingPage-items");
 
-            return elements;
+            return doc.select("div.listingPage-items");
         }
 
 //        @Override
