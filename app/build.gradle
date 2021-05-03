@@ -67,26 +67,13 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    // Dependencies for Google API Client Libraries
-//    implementation("com.google.http-client:google-http-client:$googleApiClientVersion") {
-//        exclude module: 'httpclient'
-//        exclude module: 'jsr305'
-//    }
-//    implementation("com.google.api-client:google-api-client-android:$googleApiClientVersion"){
-//        exclude module: 'httpclient'
-//        exclude module: 'jsr305'
-//    }
-//    implementation("com.google.apis:google-api-services-language:v1-rev386-$googleApiClientVersion") {
-//        exclude module: 'httpclient'
-//        exclude module: 'jsr305'
-//    }
-
     // include the language API
     implementation 'io.grpc:grpc-okhttp:1.10.0'
     implementation 'com.google.cloud:google-cloud-language:1.22.0'
 
-    // https://mvnrepository.com/artifact/org.jsoup/jsoup
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

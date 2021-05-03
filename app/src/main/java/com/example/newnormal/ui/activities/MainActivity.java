@@ -16,6 +16,7 @@ import com.example.newnormal.data.models.News;
 import com.example.newnormal.ui.BottomNavigationBehavior;
 import com.example.newnormal.ui.fragments.BlankFragment;
 import com.example.newnormal.ui.fragments.CroatianNewsFragment;
+import com.example.newnormal.ui.fragments.TravelRestrictionsFragment;
 import com.example.newnormal.ui.fragments.WorldNewsFragment;
 import com.example.newnormal.vm.NewsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -48,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigationCroatianNews:
                     switchToCroatianNewsFragment();
                     return true;
-                case R.id.navigationToDoTwo:
-                    switchToBlankFragment();
+                case R.id.navigationTravelRestrictions:
+                    switchToTravelRestrictionsFragment();
                     return true;
                 case R.id.navigationToDoThree:
                     switchToBlankFragment();
@@ -167,6 +168,11 @@ public class MainActivity extends AppCompatActivity {
     public void switchToCroatianNewsFragment() {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.container, new CroatianNewsFragment()).commit();
+    }
+
+    public void switchToTravelRestrictionsFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.container, new TravelRestrictionsFragment()).commit();
     }
 
     public void switchToBlankFragment() {

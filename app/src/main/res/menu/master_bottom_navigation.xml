@@ -11,9 +11,9 @@
         android:title="@string/croatian_news" />
 
     <item
-        android:id="@+id/navigationToDoTwo"
+        android:id="@+id/navigationTravelRestrictions"
         android:icon="@drawable/ic_effort"
-        android:title="TODO #2" />
+        android:title="@string/travel_restrictions" />
 
     <item
         android:id="@+id/navigationToDoThree"
