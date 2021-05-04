@@ -1,5 +1,6 @@
 package com.example.newnormal.ui.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,10 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+
+import java.util.List;
 
 public class TravelRestrictionsFragment extends Fragment {
     private MapView mapView;
@@ -34,12 +39,23 @@ public class TravelRestrictionsFragment extends Fragment {
             @Override
             public void onMapReady(@NonNull MapboxMap mapboxMap) {
 
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                    }
-                });
+//                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+//                    @Override
+//                    public void onStyleLoaded(@NonNull Style style) {
+//                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+//                    }
+//                });
+                mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/kb49394/ckoa25mbv6mzk17qbqmp8gygf/draft"), new
+                        Style.OnStyleLoaded() {
+                            @Override
+                            public void onStyleLoaded(@NonNull Style style) {
+                                // Custom map style has been loaded and map is now ready
+                                Layer layer = style.getLayer("italy"); // TODO: replace this with loop after layers are added to MapBox for all countries
+                                if (layer != null) {
+                                    layer.setProperties(PropertyFactory.fillColor(Color.parseColor("#00ff08")), PropertyFactory.fillOpacity(0.5f));
+                                }
+                            }
+                        });
             }
         });
 

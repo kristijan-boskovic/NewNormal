@@ -105,15 +105,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            worldNewsMutableList = (MutableLiveData<List<News>>) getNewsFromApi();
-            croatianNewsMutableList = (MutableLiveData<List<News>>) getNewsFromScraping();
+//            worldNewsMutableList = (MutableLiveData<List<News>>) getNewsFromApi();
+//            croatianNewsMutableList = (MutableLiveData<List<News>>) getNewsFromScraping();
+            croatianNewsMutableList = (MutableLiveData<List<News>>) getNewsFromScraping(); // TODO: delete this line and uncomment two lines above after everything else is developed
+            worldNewsMutableList = croatianNewsMutableList; // TODO: delete this line and uncomment two lines above after everything else is developed
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        getTravelAdvisory(); // TODO: make method return processed data
+//        getTravelAdvisory(); // TODO: uncomment this and make method return processed data after mapbox countries are added
     }
 
     public static void filterPositiveNewsTitles(List<News> newsList, String newsTitlesString) {
