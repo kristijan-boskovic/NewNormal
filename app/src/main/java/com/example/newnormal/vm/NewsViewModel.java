@@ -36,7 +36,10 @@ import java.util.ListIterator;
 import java.util.concurrent.ExecutionException;
 
 public class NewsViewModel extends AndroidViewModel {
-    final NewsApiClient newsApiClient = new NewsApiClient("ed691272a6f2434dab4498402eac8ad9");
+    private static final String TOTAL_CROATIA_NEWS_API_URL = "https://www.total-croatia-news.com";
+    private static final String NEWS_API_KEY = "ed691272a6f2434dab4498402eac8ad9";
+
+    private final NewsApiClient newsApiClient = new NewsApiClient(NEWS_API_KEY);
 
     public NewsViewModel(@NonNull Application application) {
         super(application);
@@ -85,7 +88,7 @@ public class NewsViewModel extends AndroidViewModel {
         List<News> croatianNewsList = new ArrayList<>();
 
         for (int i = 1; i < 11; i++) {
-            String url = "https://www.total-croatia-news.com/tag/coronavirus/page-" + i;
+            String url = TOTAL_CROATIA_NEWS_API_URL + "/tag/coronavirus/page-" + i;
             Elements elements = new CroatianNewsJsoupTask().execute(url).get();
             croatianNewsList.addAll(fillCroatianNewsList(elements));
         }
@@ -96,6 +99,29 @@ public class NewsViewModel extends AndroidViewModel {
         croatianNewsMutableList.setValue(croatianNewsList);
 
         return croatianNewsMutableList;
+    }
+
+    private static class CroatianNewsJsoupTask extends AsyncTask<String, Void, Elements> {
+        @Override
+        protected Elements doInBackground(String... url) {
+            Document doc = null;
+            try {
+                doc = Jsoup.connect(url[0])
+                        .timeout(6000)
+                        .get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            assert doc != null;
+
+            return doc.select("div.listingPage-items");
+        }
+
+//        @Override
+//        protected void onPostExecute(String result) {
+//            //if you had a ui element, you could display the title
+//            ((TextView)findViewById (R.id.myTextView)).setText (result);
+//        }
     }
 
     private void fillWorldNewsList(List<Article> articles, List<News> worldNewsList, LinkedHashSet<News> hashSet) {
@@ -132,10 +158,10 @@ public class NewsViewModel extends AndroidViewModel {
             String newsImageUrlPath = element.select("div.img-focus img").attr("style");
             String s1 = (newsImageUrlPath.substring(newsImageUrlPath.indexOf("/")));
             String s2 = (s1.substring(0, s1.length() - 3)).trim();
-            String newsImageUrlFull = "https://www.total-croatia-news.com" + s2;
+            String newsImageUrlFull = TOTAL_CROATIA_NEWS_API_URL + s2;
 
             String newsUrlPath = element.select("h2.listingPage-item-title a").attr("href");
-            String newsUrlFull = "https://www.total-croatia-news.com" + newsUrlPath;
+            String newsUrlFull = TOTAL_CROATIA_NEWS_API_URL + newsUrlPath;
 
             String newsPublishingDate = element.select("div.listingPage-item-content span.listingPage-item-date").text();
 
@@ -149,29 +175,6 @@ public class NewsViewModel extends AndroidViewModel {
         }
 
         return croatianNewsList;
-    }
-
-    private static class CroatianNewsJsoupTask extends AsyncTask<String, Void, Elements> {
-        @Override
-        protected Elements doInBackground(String... url) {
-            Document doc = null;
-            try {
-                doc = Jsoup.connect(url[0])
-                        .timeout(6000)
-                        .get();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            assert doc != null;
-
-            return doc.select("div.listingPage-items");
-        }
-
-//        @Override
-//        protected void onPostExecute(String result) {
-//            //if you had a ui element, you could display the title
-//            ((TextView)findViewById (R.id.myTextView)).setText (result);
-//        }
     }
 
     private String mergeAllNewsTitles(List<News> newsList) {

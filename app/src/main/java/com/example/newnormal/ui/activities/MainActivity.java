@@ -1,6 +1,7 @@
 package com.example.newnormal.ui.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -13,11 +14,13 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.News;
+import com.example.newnormal.data.models.TravelAdvisory;
 import com.example.newnormal.ui.BottomNavigationBehavior;
 import com.example.newnormal.ui.fragments.BlankFragment;
 import com.example.newnormal.ui.fragments.CroatianNewsFragment;
 import com.example.newnormal.ui.fragments.TravelRestrictionsFragment;
 import com.example.newnormal.ui.fragments.WorldNewsFragment;
+import com.example.newnormal.util.TravelAdvisoryApi;
 import com.example.newnormal.vm.NewsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -34,7 +37,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String TRAVEL_ADVISORY_URL = "https://www.travel-advisory.info";
+
     private static LanguageServiceClient mLanguageClient;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -101,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        getTravelAdvisory(); // TODO: make method return processed data
     }
 
     public static void filterPositiveNewsTitles(List<News> newsList, String newsTitlesString) {
@@ -152,14 +165,6 @@ public class MainActivity extends AppCompatActivity {
         return sentiments;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // shutdown the connection
-        mLanguageClient.shutdown();
-    }
-
     public void switchToWorldNewsFragment() {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.container, new WorldNewsFragment()).commit();
@@ -192,11 +197,51 @@ public class MainActivity extends AppCompatActivity {
         return newsViewModel.getCroatianNewsFromScraping();
     }
 
+    public void getTravelAdvisory() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TRAVEL_ADVISORY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        TravelAdvisoryApi travelAdvisoryApi = retrofit.create(TravelAdvisoryApi.class);
+        Call<TravelAdvisory> call = travelAdvisoryApi.getTravelAdvisory();
+        call.enqueue(new Callback<TravelAdvisory>() {
+            @Override
+            public void onResponse(@NonNull Call<TravelAdvisory> call, @NonNull Response<TravelAdvisory> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Success", "Fetching data from Travel Advisory API successful!");
+
+                    TravelAdvisory travelAdvisory = response.body();
+                    if (travelAdvisory != null) {
+//                        String restrictions = travelAdvisory.get(3).toString();
+                    }
+//                    Log.d("Success", travelRestrictions.get(3).toString());
+//                    TextView textView = findViewById(R.id.text);
+//                    textView.setText(posts.get(3).getBody().toString());
+                } else {
+                    Log.d("Fail", "Fetching data from Travel Advisory API failed!");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TravelAdvisory> call, @NonNull Throwable t) {
+                Log.d("Error", "Error occurred during fetching data from Travel Advisory API!");
+            }
+        });
+    }
+
     public LiveData<List<News>> getWorldNewsMutableList() {
         return worldNewsMutableList;
     }
 
     public LiveData<List<News>> getCroatianNewsMutableList() {
         return croatianNewsMutableList;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // shutdown the connection
+        mLanguageClient.shutdown();
     }
 }
