@@ -35,9 +35,7 @@ public class TravelRestrictionsFragment extends Fragment {
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        mapView.getMapAsync(mapboxMap -> {
 
 //                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
 //                    @Override
@@ -45,18 +43,13 @@ public class TravelRestrictionsFragment extends Fragment {
 //                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
 //                    }
 //                });
-                mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/kb49394/ckoa25mbv6mzk17qbqmp8gygf/draft"), new
-                        Style.OnStyleLoaded() {
-                            @Override
-                            public void onStyleLoaded(@NonNull Style style) {
-                                // Custom map style has been loaded and map is now ready
-                                Layer layer = style.getLayer("italy"); // TODO: replace this with loop after layers are added to MapBox for all countries
-                                if (layer != null) {
-                                    layer.setProperties(PropertyFactory.fillColor(Color.parseColor("#00ff08")), PropertyFactory.fillOpacity(0.5f));
-                                }
-                            }
-                        });
-            }
+            mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/kb49394/ckoaaq2pj53td17nx976frxca/draft"), style -> {
+                // Custom map style has been loaded and map is now ready
+                Layer layer = style.getLayer("italy"); // TODO: replace this with loop after layers are added to MapBox for all countries
+                if (layer != null) {
+                    layer.setProperties(PropertyFactory.fillColor(Color.parseColor("#00ff08")), PropertyFactory.fillOpacity(0.5f));
+                }
+            });
         });
 
         return view;
@@ -87,7 +80,7 @@ public class TravelRestrictionsFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
