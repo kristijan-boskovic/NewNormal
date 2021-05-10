@@ -45,8 +45,8 @@ public class CroatianNewsFragment extends Fragment {
         final MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
         activity.setTitle(R.string.croatian_covid_news);
-        LiveData<List<News>> newsList = activity.getCroatianNewsMutableList();
 
+        LiveData<List<News>> newsList = activity.getCroatianNewsMutableList();
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override

@@ -13,7 +13,7 @@
     <item
         android:id="@+id/navigationTravelRestrictions"
         android:icon="@drawable/ic_effort"
-        android:title="@string/travel_restrictions" />
+        android:title="@string/travel_risk_map" />
 
     <item
         android:id="@+id/navigationToDoThree"

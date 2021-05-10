@@ -91,5 +91,5 @@
     <string name="croatian_covid_news">Croatian COVID-19 news</string>
     <string name="search">Search</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoia2I0OTM5NCIsImEiOiJja284am84bjcybjVvMnhwZzVmY3Y2NmcwIn0.E7aqpbW97z2UvJHVeURZvw</string>
-    <string name="travel_restrictions">Travel restrictions</string>
+    <string name="travel_risk_map">Travel risk map</string>
 </resources>

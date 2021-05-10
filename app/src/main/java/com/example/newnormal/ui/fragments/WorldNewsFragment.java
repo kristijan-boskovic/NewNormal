@@ -45,8 +45,8 @@ public class WorldNewsFragment extends Fragment {
         final MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
         activity.setTitle(R.string.world_covid_news);
-        LiveData<List<News>> newsList = activity.getWorldNewsMutableList();
 
+        LiveData<List<News>> newsList = activity.getWorldNewsMutableList();
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override

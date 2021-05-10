@@ -1,7 +1,6 @@
 package com.example.newnormal.ui.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -20,8 +19,8 @@ import com.example.newnormal.ui.fragments.BlankFragment;
 import com.example.newnormal.ui.fragments.CroatianNewsFragment;
 import com.example.newnormal.ui.fragments.TravelRestrictionsFragment;
 import com.example.newnormal.ui.fragments.WorldNewsFragment;
-import com.example.newnormal.util.TravelAdvisoryApi;
 import com.example.newnormal.vm.NewsViewModel;
+import com.example.newnormal.vm.TravelRestrictionsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.language.v1.AnalyzeSentimentResponse;
@@ -35,17 +34,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class MainActivity extends AppCompatActivity {
-    private static final String TRAVEL_ADVISORY_URL = "https://www.travel-advisory.info";
-
     private static LanguageServiceClient mLanguageClient;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -74,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
     MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
+    MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>> travelAdvisoryMutableMap = new MutableLiveData<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +108,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        getTravelAdvisory(); // TODO: uncomment this and make method return processed data after mapbox countries are added
+        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory();
     }
 
+    //region Sentiment analysis methods
     public static void filterPositiveNewsTitles(List<News> newsList, String newsTitlesString) {
         List<Sentiment> sentiments = performSentimentAnalysisClient(newsTitlesString);
         if (sentiments.size() == newsList.size()) { // Check if number of sentiments match number of news articles (sentiment analysis done correctly)
@@ -166,7 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
         return sentiments;
     }
+    //endregion
 
+    //region Fragment switching methods
     public void switchToWorldNewsFragment() {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.container, new WorldNewsFragment()).commit();
@@ -186,7 +182,9 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.container, new BlankFragment()).commit();
     }
+    //endregion
 
+    //region Data fetching methods
     public LiveData<List<News>> getNewsFromApi() {
         NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
 
@@ -199,38 +197,14 @@ public class MainActivity extends AppCompatActivity {
         return newsViewModel.getCroatianNewsFromScraping();
     }
 
-    public void getTravelAdvisory() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(TRAVEL_ADVISORY_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        TravelAdvisoryApi travelAdvisoryApi = retrofit.create(TravelAdvisoryApi.class);
-        Call<TravelAdvisory> call = travelAdvisoryApi.getTravelAdvisory();
-        call.enqueue(new Callback<TravelAdvisory>() {
-            @Override
-            public void onResponse(@NonNull Call<TravelAdvisory> call, @NonNull Response<TravelAdvisory> response) {
-                if (response.isSuccessful()) {
-                    Log.d("Success", "Fetching data from Travel Advisory API successful!");
+    public LiveData<Map<String, TravelAdvisory.CountryData.Advisory>> getTravelAdvisory() {
+        TravelRestrictionsViewModel travelRestrictionsViewModel = ViewModelProviders.of(this).get(TravelRestrictionsViewModel.class);
 
-                    TravelAdvisory travelAdvisory = response.body();
-                    if (travelAdvisory != null) {
-//                        String restrictions = travelAdvisory.get(3).toString();
-                    }
-//                    Log.d("Success", travelRestrictions.get(3).toString());
-//                    TextView textView = findViewById(R.id.text);
-//                    textView.setText(posts.get(3).getBody().toString());
-                } else {
-                    Log.d("Fail", "Fetching data from Travel Advisory API failed!");
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<TravelAdvisory> call, @NonNull Throwable t) {
-                Log.d("Error", "Error occurred during fetching data from Travel Advisory API!");
-            }
-        });
+        return travelRestrictionsViewModel.getTravelAdvisory();
     }
+    //endregion
 
+    //region Getters
     public LiveData<List<News>> getWorldNewsMutableList() {
         return worldNewsMutableList;
     }
@@ -238,6 +212,11 @@ public class MainActivity extends AppCompatActivity {
     public LiveData<List<News>> getCroatianNewsMutableList() {
         return croatianNewsMutableList;
     }
+
+    public LiveData<Map<String, TravelAdvisory.CountryData.Advisory>> getTravelAdvisoryMutableMap() {
+        return travelAdvisoryMutableMap;
+    }
+    //endregion
 
     @Override
     protected void onDestroy() {

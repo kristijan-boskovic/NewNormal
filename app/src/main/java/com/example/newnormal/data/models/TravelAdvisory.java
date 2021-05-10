@@ -20,7 +20,7 @@ public class TravelAdvisory {
     }
 
 
-    private static class ApiStatus {
+    public static class ApiStatus {
         private final Request request;
         private final Reply reply;
 
@@ -38,7 +38,7 @@ public class TravelAdvisory {
         }
 
 
-        private static class Request {
+        public static class Request {
             private final String item;
 
             public Request(String item) {
@@ -50,7 +50,7 @@ public class TravelAdvisory {
             }
         }
 
-        private static class Reply {
+        public static class Reply {
             private final String cache;
             private final String code;
             private final String status;
@@ -87,7 +87,7 @@ public class TravelAdvisory {
         }
     }
 
-    private static class CountryData {
+    public static class CountryData {
         private final String iso_alpha2;
         private final String name;
         private final String continent;
@@ -117,7 +117,7 @@ public class TravelAdvisory {
         }
 
 
-        private static class Advisory {
+        public static class Advisory {
             private final String score;
             private final String sources_active;
             private final String message;
