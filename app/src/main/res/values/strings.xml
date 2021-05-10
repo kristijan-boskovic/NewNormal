@@ -98,4 +98,5 @@
     <string name="high_risk">High risk</string>
     <string name="extreme_risk">Extreme risk</string>
     <string name="travel_risk_info_text">Travel risk map shows the level of risk when travelling to a specific country. Levels of risk were calculated based on average risk assessments provided by different authorities. \n\nLevels of risk are divided into four categories:</string>
+    <string name="last_updated_date">Last updated date</string>
 </resources>

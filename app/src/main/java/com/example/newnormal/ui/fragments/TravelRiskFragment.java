@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +35,7 @@ public class TravelRiskFragment extends Fragment {
     private static final String MAPBOX_STYLE_URI = "mapbox://styles/kb49394/ckoaaq2pj53td17nx976frxca";
     private MapView mapView;
     private Map<String, TravelAdvisory.CountryData.Advisory> travelAdvisoryMapbox = new HashMap<>();
+    private String lastUpdatedTimeStamp = "";
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final MainActivity activity = (MainActivity) getActivity();
@@ -63,6 +65,9 @@ public class TravelRiskFragment extends Fragment {
                     String countryName = entry.getKey();
                     TravelAdvisory.CountryData.Advisory advisory = entry.getValue();
                     double travelRiskScore = Double.parseDouble(advisory.getScore());
+                    if (lastUpdatedTimeStamp.isEmpty()) {
+                        lastUpdatedTimeStamp = advisory.getUpdated();
+                    }
 
                     Layer layer = style.getLayer(countryName);
                     if (layer != null) {
@@ -147,7 +152,12 @@ public class TravelRiskFragment extends Fragment {
     }
 
     private void openDialog() {
+        Bundle args = new Bundle();
+        args.putString("lastUpdated", lastUpdatedTimeStamp);
+
         TravelRiskDialog travelRiskDialog = new TravelRiskDialog();
+        travelRiskDialog.setArguments(args);
+
         travelRiskDialog.show(getParentFragmentManager(), "Info dialog");
     }
 }
