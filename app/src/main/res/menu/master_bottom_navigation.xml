@@ -11,7 +11,7 @@
         android:title="@string/croatian_news" />
 
     <item
-        android:id="@+id/navigationTravelRestrictions"
+        android:id="@+id/navigationTravelRiskMap"
         android:icon="@drawable/ic_effort"
         android:title="@string/travel_risk_map" />
 

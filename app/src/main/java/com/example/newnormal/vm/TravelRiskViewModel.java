@@ -21,10 +21,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TravelRestrictionsViewModel extends AndroidViewModel {
+public class TravelRiskViewModel extends AndroidViewModel {
     private static final String TRAVEL_ADVISORY_URL = "https://www.travel-advisory.info";
 
-    public TravelRestrictionsViewModel(@NonNull Application application) {
+    public TravelRiskViewModel(@NonNull Application application) {
         super(application);
     }
 

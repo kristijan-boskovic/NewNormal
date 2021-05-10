@@ -17,10 +17,10 @@ import com.example.newnormal.data.models.TravelAdvisory;
 import com.example.newnormal.ui.BottomNavigationBehavior;
 import com.example.newnormal.ui.fragments.BlankFragment;
 import com.example.newnormal.ui.fragments.CroatianNewsFragment;
-import com.example.newnormal.ui.fragments.TravelRestrictionsFragment;
+import com.example.newnormal.ui.fragments.TravelRiskFragment;
 import com.example.newnormal.ui.fragments.WorldNewsFragment;
 import com.example.newnormal.vm.NewsViewModel;
-import com.example.newnormal.vm.TravelRestrictionsViewModel;
+import com.example.newnormal.vm.TravelRiskViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.language.v1.AnalyzeSentimentResponse;
@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigationCroatianNews:
                     switchToCroatianNewsFragment();
                     return true;
-                case R.id.navigationTravelRestrictions:
-                    switchToTravelRestrictionsFragment();
+                case R.id.navigationTravelRiskMap:
+                    switchToTravelRiskFragment();
                     return true;
                 case R.id.navigationToDoThree:
                     switchToBlankFragment();
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory();
+//        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory(); // TODO: avoiding API calls, uncomment later
     }
 
     //region Sentiment analysis methods
@@ -173,9 +173,9 @@ public class MainActivity extends AppCompatActivity {
         manager.beginTransaction().replace(R.id.container, new CroatianNewsFragment()).commit();
     }
 
-    public void switchToTravelRestrictionsFragment() {
+    public void switchToTravelRiskFragment() {
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, new TravelRestrictionsFragment()).commit();
+        manager.beginTransaction().replace(R.id.container, new TravelRiskFragment()).commit();
     }
 
     public void switchToBlankFragment() {
@@ -198,9 +198,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public LiveData<Map<String, TravelAdvisory.CountryData.Advisory>> getTravelAdvisory() {
-        TravelRestrictionsViewModel travelRestrictionsViewModel = ViewModelProviders.of(this).get(TravelRestrictionsViewModel.class);
+        TravelRiskViewModel travelRiskViewModel = ViewModelProviders.of(this).get(TravelRiskViewModel.class);
 
-        return travelRestrictionsViewModel.getTravelAdvisory();
+        return travelRiskViewModel.getTravelAdvisory();
     }
     //endregion
 

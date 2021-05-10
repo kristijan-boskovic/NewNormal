@@ -92,4 +92,10 @@
     <string name="search">Search</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoia2I0OTM5NCIsImEiOiJja284am84bjcybjVvMnhwZzVmY3Y2NmcwIn0.E7aqpbW97z2UvJHVeURZvw</string>
     <string name="travel_risk_map">Travel risk map</string>
+    <string name="info">Info</string>
+    <string name="low_risk">Low risk</string>
+    <string name="medium_risk">Medium risk</string>
+    <string name="high_risk">High risk</string>
+    <string name="extreme_risk">Extreme risk</string>
+    <string name="travel_risk_info_text">Travel risk map shows the level of risk when travelling to a specific country. Levels of risk were calculated based on average risk assessments provided by different authorities. \n\nLevels of risk are divided into four categories:</string>
 </resources>

@@ -4,6 +4,9 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,6 +19,7 @@ import androidx.lifecycle.Observer;
 
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.TravelAdvisory;
+import com.example.newnormal.ui.TravelRiskDialog;
 import com.example.newnormal.ui.activities.MainActivity;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -26,7 +30,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TravelRestrictionsFragment extends Fragment {
+public class TravelRiskFragment extends Fragment {
     private static final String MAPBOX_STYLE_URI = "mapbox://styles/kb49394/ckoaaq2pj53td17nx976frxca";
     private MapView mapView;
     private Map<String, TravelAdvisory.CountryData.Advisory> travelAdvisoryMapbox = new HashMap<>();
@@ -38,14 +42,14 @@ public class TravelRestrictionsFragment extends Fragment {
 
         Mapbox.getInstance(activity, getString(R.string.mapbox_access_token));
 
-        View view = inflater.inflate(R.layout.fragment_travel_restrictions, container, false);
+        View view = inflater.inflate(R.layout.fragment_travel_risk, container, false);
+        setHasOptionsMenu(true);
 
         LiveData<Map<String, TravelAdvisory.CountryData.Advisory>> travelAdvisoryMutableMap = activity.getTravelAdvisoryMutableMap();
         travelAdvisoryMutableMap.observe(getViewLifecycleOwner(), new Observer<Map<String, TravelAdvisory.CountryData.Advisory>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChanged(@Nullable Map<String, TravelAdvisory.CountryData.Advisory> travelAdvisoryMap) {
-//                newsAdapter.setNews(newsList);
                 travelAdvisoryMapbox = travelAdvisoryMap;
             }
         });
@@ -75,7 +79,7 @@ public class TravelRestrictionsFragment extends Fragment {
                             layer.setProperties(PropertyFactory.fillColor(Color.parseColor("#ff0000")), PropertyFactory.fillOpacity(0.5f)); // Extreme risk (red)
                         }
                         else {
-                            layer.setProperties(PropertyFactory.fillColor(Color.parseColor("#ababab")), PropertyFactory.fillOpacity(0.5f)); // Unknown (grey)
+                            layer.setProperties(PropertyFactory.fillColor(Color.parseColor("#ababab")), PropertyFactory.fillOpacity(0.5f)); // Unknown risk (grey)
                         }
                     }
                 }
@@ -125,5 +129,25 @@ public class TravelRestrictionsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mapView.onDestroy();
+    }
+
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.info_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        openDialog();
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openDialog() {
+        TravelRiskDialog travelRiskDialog = new TravelRiskDialog();
+        travelRiskDialog.show(getParentFragmentManager(), "Info dialog");
     }
 }
