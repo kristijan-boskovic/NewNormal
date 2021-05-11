@@ -2,21 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigationWorldNews"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_baseline_public_24"
         android:title="@string/world_news" />
 
     <item
         android:id="@+id/navigationCroatianNews"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_baseline_travel_explore_24"
         android:title="@string/croatian_news" />
 
     <item
         android:id="@+id/navigationTravelRiskMap"
-        android:icon="@drawable/ic_effort"
+        android:icon="@drawable/ic_baseline_map_24"
         android:title="@string/travel_risk_map" />
 
     <item
-        android:id="@+id/navigationToDoThree"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="TODO #3" />
+        android:id="@+id/navigationBookmarkedNews"
+        android:icon="@drawable/ic_baseline_bookmarks_24"
+        android:title="@string/bookmarks" />
 </menu>

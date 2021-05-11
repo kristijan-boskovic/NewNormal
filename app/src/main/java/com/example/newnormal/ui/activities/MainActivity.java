@@ -10,15 +10,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.room.Room;
 
 import com.example.newnormal.R;
+import com.example.newnormal.data.BookmarkedNewsDatabase;
+import com.example.newnormal.data.dao.BookmarkedNewsDao;
+import com.example.newnormal.data.models.BookmarkedNews;
 import com.example.newnormal.data.models.News;
 import com.example.newnormal.data.models.TravelAdvisory;
 import com.example.newnormal.ui.BottomNavigationBehavior;
-import com.example.newnormal.ui.fragments.BlankFragment;
+import com.example.newnormal.ui.fragments.BookmarkedNewsFragment;
 import com.example.newnormal.ui.fragments.CroatianNewsFragment;
 import com.example.newnormal.ui.fragments.TravelRiskFragment;
 import com.example.newnormal.ui.fragments.WorldNewsFragment;
+import com.example.newnormal.vm.BookmarkedNewsViewModel;
 import com.example.newnormal.vm.NewsViewModel;
 import com.example.newnormal.vm.TravelRiskViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -55,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigationTravelRiskMap:
                     switchToTravelRiskFragment();
                     return true;
-                case R.id.navigationToDoThree:
-                    switchToBlankFragment();
+                case R.id.navigationBookmarkedNews:
+                    switchToBookmarkedNewsFragment();
                     return true;
             }
 
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
     MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
+    LiveData<List<BookmarkedNews>> bookmarkedNewsMutableList;
     MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>> travelAdvisoryMutableMap = new MutableLiveData<>();
 
     @Override
@@ -109,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 //        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory(); // TODO: avoiding API calls, uncomment later
+
+        bookmarkedNewsMutableList = getBookmarkedNewsFromDatabase();
     }
 
     //region Sentiment analysis methods
@@ -178,9 +186,9 @@ public class MainActivity extends AppCompatActivity {
         manager.beginTransaction().replace(R.id.container, new TravelRiskFragment()).commit();
     }
 
-    public void switchToBlankFragment() {
+    public void switchToBookmarkedNewsFragment() {
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, new BlankFragment()).commit();
+        manager.beginTransaction().replace(R.id.container, new BookmarkedNewsFragment()).commit();
     }
     //endregion
 
@@ -197,6 +205,19 @@ public class MainActivity extends AppCompatActivity {
         return newsViewModel.getCroatianNewsFromScraping();
     }
 
+    public LiveData<List<BookmarkedNews>> getBookmarkedNewsFromDatabase() {
+        BookmarkedNewsViewModel bookmarkedNewsViewModel = ViewModelProviders.of(this).get(BookmarkedNewsViewModel.class);
+//        bookmarkedNewsViewModel.deleteAllBookmarkedNews(); // TODO: This is just for database testing purposes. Delete this block of code later.
+//        BookmarkedNews bookmarkedNews = new BookmarkedNews(croatianNewsMutableList.getValue().get(1).getUrl(),
+//                croatianNewsMutableList.getValue().get(1).getTitle(),
+//                croatianNewsMutableList.getValue().get(1).getDescription(),
+//                croatianNewsMutableList.getValue().get(1).getSource(),
+//                croatianNewsMutableList.getValue().get(1).getPublishingDate(),
+//                croatianNewsMutableList.getValue().get(1).getImageUrl());
+//        bookmarkedNewsViewModel.insert(bookmarkedNews);
+        return bookmarkedNewsViewModel.getAllBookmarkedNews();
+    }
+
     public LiveData<Map<String, TravelAdvisory.CountryData.Advisory>> getTravelAdvisory() {
         TravelRiskViewModel travelRiskViewModel = ViewModelProviders.of(this).get(TravelRiskViewModel.class);
 
@@ -211,6 +232,10 @@ public class MainActivity extends AppCompatActivity {
 
     public LiveData<List<News>> getCroatianNewsMutableList() {
         return croatianNewsMutableList;
+    }
+
+    public LiveData<List<BookmarkedNews>> getBookmarkedNewsMutableList() {
+        return bookmarkedNewsMutableList;
     }
 
     public LiveData<Map<String, TravelAdvisory.CountryData.Advisory>> getTravelAdvisoryMutableMap() {

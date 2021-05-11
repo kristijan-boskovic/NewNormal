@@ -1,7 +1,6 @@
 package com.example.newnormal.ui.fragments;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -21,16 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newnormal.R;
-import com.example.newnormal.data.models.News;
+import com.example.newnormal.data.models.BookmarkedNews;
 import com.example.newnormal.ui.activities.MainActivity;
 import com.example.newnormal.ui.activities.NewsArticleActivity;
-import com.example.newnormal.ui.adapters.NewsAdapter;
+import com.example.newnormal.ui.adapters.BookmarkedNewsAdapter;
 
 import java.util.List;
 
-public class CroatianNewsFragment extends Fragment {
+public class BookmarkedNewsFragment extends Fragment {
     private static final int NEWS_ARTICLE_REQUEST = 1;
-    private final NewsAdapter newsAdapter = new NewsAdapter();
+    private final BookmarkedNewsAdapter newsAdapter = new BookmarkedNewsAdapter();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
@@ -44,19 +42,19 @@ public class CroatianNewsFragment extends Fragment {
         // TODO: replace this with more loosely coupled solution (search on Google: "send data from activity to fragment")
         final MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
-        activity.setTitle(R.string.croatian_covid_news);
+        activity.setTitle(R.string.bookmarks);
 
-        LiveData<List<News>> newsList = activity.getCroatianNewsMutableList();
-        newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
+        LiveData<List<BookmarkedNews>> newsList = activity.getBookmarkedNewsMutableList();
+        newsList.observe(getViewLifecycleOwner(), new Observer<List<BookmarkedNews>>() {
             @Override
-            public void onChanged(@Nullable List<News> newsList) {
-                newsAdapter.setNews(newsList);
+            public void onChanged(@Nullable List<BookmarkedNews> bookmarkedNewsList) {
+                newsAdapter.setNews(bookmarkedNewsList);
             }
         });
 
-        newsAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
+        newsAdapter.setOnItemClickListener(new BookmarkedNewsAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(News news) {
+            public void onItemClick(BookmarkedNews news) {
                 Intent i = new Intent(getActivity(), NewsArticleActivity.class);
                 i.putExtra(NewsArticleActivity.EXTRA_NEWS_URL, news.getUrl());
                 startActivityForResult(i, NEWS_ARTICLE_REQUEST);
@@ -72,18 +70,19 @@ public class CroatianNewsFragment extends Fragment {
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) item.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                newsAdapter.getFilter().filter(newText);
-
-                return false;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { // TODO: Uncomment and fix (issue with query results not appearing on initial fragment start
+                                                                                    // TODO: It has to to something with async data getting from database
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                newsAdapter.getFilter().filter(newText);
+//
+//                return false;
+//            }
+//        });
     }
 }

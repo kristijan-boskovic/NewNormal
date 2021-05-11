@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -48,6 +50,7 @@ public class NewsArticleActivity extends AppCompatActivity {
         webView.loadUrl(url);
 
         ActionBar bar = getSupportActionBar();
+        assert bar != null;
         bar.setTitle("News");
 //        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("blue")));
 
@@ -56,9 +59,20 @@ public class NewsArticleActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.bookmark_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+        }
+        else if (item.getItemId() == R.id.action_bookmark) {
+            Toast.makeText(this, "News article bookmarked!", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

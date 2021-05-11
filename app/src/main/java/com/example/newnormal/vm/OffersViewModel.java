@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class OffersViewModel extends AndroidViewModel {
-    private OfferRepository offerRepository;
+    private final OfferRepository offerRepository;
 
     public OffersViewModel(@NonNull Application application) {
         super(application);

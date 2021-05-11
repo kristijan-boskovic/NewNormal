@@ -48,7 +48,6 @@ public class WorldNewsFragment extends Fragment {
 
         LiveData<List<News>> newsList = activity.getWorldNewsMutableList();
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChanged(@Nullable List<News> newsList) {
                 newsAdapter.setNews(newsList);
