@@ -38,7 +38,7 @@ public class BookmarkedNewsAdapter extends RecyclerView.Adapter<BookmarkedNewsAd
         holder.tvNewsDescription.setText(currentNews.getDescription());
         holder.tvNewsSource.setText(currentNews.getSource());
         holder.tvNewsPublishingDate.setText(currentNews.getPublishingDate());
-        String imageUrl = currentNews.imageUrl;
+        String imageUrl = currentNews.getImageUrl();
         if (imageUrl.trim().length() == 0) {
             holder.ivNewsImage.setImageResource(R.drawable.ic_menu_gallery);
         }

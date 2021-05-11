@@ -38,13 +38,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> im
         holder.tvNewsDescription.setText(currentNews.getDescription());
         holder.tvNewsSource.setText(currentNews.getSource());
         holder.tvNewsPublishingDate.setText(currentNews.getPublishingDate());
-        Picasso.get()
-                .load(currentNews.getImageUrl())
-                .placeholder(R.drawable.ic_menu_gallery)
-                .error(R.drawable.ic_menu_gallery)
-                .fit()
-                .centerCrop()
-                .into(holder.ivNewsImage);
+        String imageUrl = currentNews.getImageUrl();
+        if (imageUrl.trim().length() == 0) {
+            holder.ivNewsImage.setImageResource(R.drawable.ic_menu_gallery);
+        }
+        else {
+            Picasso.get()
+                    .load(currentNews.getImageUrl())
+                    .placeholder(R.drawable.ic_menu_gallery)
+                    .error(R.drawable.ic_menu_gallery)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.ivNewsImage);
+        }
     }
 
     @Override

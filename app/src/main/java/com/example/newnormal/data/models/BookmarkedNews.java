@@ -1,31 +1,34 @@
 package com.example.newnormal.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "bookmarked_news")
-public class BookmarkedNews {
+public class BookmarkedNews implements Parcelable {
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    private int id;
 
     @ColumnInfo(name = "url")
-    public String url;
+    private final String url;
 
     @ColumnInfo(name = "title")
-    public String title;
+    private final String title;
 
     @ColumnInfo(name = "description")
-    public String description;
+    private final String description;
 
     @ColumnInfo(name = "source")
-    public String source;
+    private final String source;
 
     @ColumnInfo(name = "publishing_date")
-    public String publishingDate;
+    private final String publishingDate;
 
     @ColumnInfo(name = "image_url")
-    public String imageUrl;
+    private final String imageUrl;
 
     public BookmarkedNews(String url, String title, String description, String source, String publishingDate, String imageUrl) {
         this.url = url;
@@ -34,6 +37,14 @@ public class BookmarkedNews {
         this.source = source;
         this.publishingDate = publishingDate;
         this.imageUrl = imageUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUrl() {
@@ -58,5 +69,39 @@ public class BookmarkedNews {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeString(url);
+        out.writeString(title);
+        out.writeString(description);
+        out.writeString(source);
+        out.writeString(publishingDate);
+        out.writeString(imageUrl);
+    }
+
+    public static final Creator<BookmarkedNews> CREATOR = new Creator<BookmarkedNews>() {
+        public BookmarkedNews createFromParcel(Parcel in) {
+            return new BookmarkedNews(in);
+        }
+
+        public BookmarkedNews[] newArray(int size) {
+            return new BookmarkedNews[size];
+        }
+    };
+
+    protected BookmarkedNews(Parcel in) {
+        url = in.readString();
+        title = in.readString();
+        description = in.readString();
+        source = in.readString();
+        publishingDate = in.readString();
+        imageUrl = in.readString();
     }
 }

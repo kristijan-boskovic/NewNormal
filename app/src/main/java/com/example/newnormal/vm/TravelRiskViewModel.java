@@ -41,7 +41,7 @@ public class TravelRiskViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NonNull Call<TravelAdvisory> call, @NonNull Response<TravelAdvisory> response) {
                 if (response.isSuccessful()) {
-                    Log.d("Success", "Fetching data from Travel Advisory API successful!");
+                    Log.d("Travel Advisory API", "Fetching data from Travel Advisory API successful!");
 
                     TravelAdvisory travelAdvisory = response.body();
                     if (travelAdvisory != null) {
@@ -57,13 +57,13 @@ public class TravelRiskViewModel extends AndroidViewModel {
                         travelAdvisoryMutableMap.setValue(travelAdvisoryMap);
                     }
                 } else {
-                    Log.d("Fail", "Fetching data from Travel Advisory API failed!");
+                    Log.d("Travel Advisory API", "Fetching data from Travel Advisory API failed!");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<TravelAdvisory> call, @NonNull Throwable t) {
-                Log.d("Error", "Error occurred during fetching data from Travel Advisory API!");
+                Log.d("Travel Advisory API", "Error occurred during fetching data from Travel Advisory API!");
             }
         });
 

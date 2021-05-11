@@ -27,7 +27,6 @@ import com.example.newnormal.ui.adapters.BookmarkedNewsAdapter;
 import java.util.List;
 
 public class BookmarkedNewsFragment extends Fragment {
-    private static final int NEWS_ARTICLE_REQUEST = 1;
     private final BookmarkedNewsAdapter newsAdapter = new BookmarkedNewsAdapter();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,9 +54,9 @@ public class BookmarkedNewsFragment extends Fragment {
         newsAdapter.setOnItemClickListener(new BookmarkedNewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BookmarkedNews news) {
-                Intent i = new Intent(getActivity(), NewsArticleActivity.class);
-                i.putExtra(NewsArticleActivity.EXTRA_NEWS_URL, news.getUrl());
-                startActivityForResult(i, NEWS_ARTICLE_REQUEST);
+                Intent intent = new Intent(getActivity(), NewsArticleActivity.class);
+                intent.putExtra("BookmarkedNews", news);
+                startActivity(intent);
             }
         });
 

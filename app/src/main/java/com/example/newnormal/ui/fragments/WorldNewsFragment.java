@@ -29,7 +29,6 @@ import com.example.newnormal.ui.adapters.NewsAdapter;
 import java.util.List;
 
 public class WorldNewsFragment extends Fragment {
-    private static final int NEWS_ARTICLE_REQUEST = 1;
     private final NewsAdapter newsAdapter = new NewsAdapter();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,9 +56,9 @@ public class WorldNewsFragment extends Fragment {
         newsAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(News news) {
-                Intent i = new Intent(getActivity(), NewsArticleActivity.class);
-                i.putExtra(NewsArticleActivity.EXTRA_NEWS_URL, news.getUrl());
-                startActivityForResult(i, NEWS_ARTICLE_REQUEST);
+                Intent intent = new Intent(getActivity(), NewsArticleActivity.class);
+                intent.putExtra("News", news);
+                startActivity(intent);
             }
         });
 

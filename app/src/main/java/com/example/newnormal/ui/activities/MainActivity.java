@@ -113,10 +113,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
-//        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory(); // TODO: avoiding API calls, uncomment later
-
         bookmarkedNewsMutableList = getBookmarkedNewsFromDatabase();
+//        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory(); // TODO: avoiding API calls, uncomment later
     }
 
     //region Sentiment analysis methods
@@ -172,23 +170,55 @@ public class MainActivity extends AppCompatActivity {
 
     //region Fragment switching methods
     public void switchToWorldNewsFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, new WorldNewsFragment()).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in,  // enter
+                        R.anim.fade_out,  // exit
+                        R.anim.fade_in,   // popEnter
+                        R.anim.slide_out  // popExit
+                )
+                .replace(R.id.container, new WorldNewsFragment())
+                .commit();
     }
 
     public void switchToCroatianNewsFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, new CroatianNewsFragment()).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in,  // enter
+                        R.anim.fade_out,  // exit
+                        R.anim.fade_in,   // popEnter
+                        R.anim.slide_out  // popExit
+                )
+                .replace(R.id.container, new CroatianNewsFragment())
+                .commit();
     }
 
     public void switchToTravelRiskFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, new TravelRiskFragment()).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in,  // enter
+                        R.anim.fade_out,  // exit
+                        R.anim.fade_in,   // popEnter
+                        R.anim.slide_out  // popExit
+                )
+                .replace(R.id.container, new TravelRiskFragment())
+                .commit();
     }
 
     public void switchToBookmarkedNewsFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, new BookmarkedNewsFragment()).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in,  // enter
+                        R.anim.fade_out,  // exit
+                        R.anim.fade_in,   // popEnter
+                        R.anim.slide_out  // popExit
+                )
+                .replace(R.id.container, new BookmarkedNewsFragment())
+                .commit();
     }
     //endregion
 
@@ -207,14 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
     public LiveData<List<BookmarkedNews>> getBookmarkedNewsFromDatabase() {
         BookmarkedNewsViewModel bookmarkedNewsViewModel = ViewModelProviders.of(this).get(BookmarkedNewsViewModel.class);
-//        bookmarkedNewsViewModel.deleteAllBookmarkedNews(); // TODO: This is just for database testing purposes. Delete this block of code later.
-//        BookmarkedNews bookmarkedNews = new BookmarkedNews(croatianNewsMutableList.getValue().get(1).getUrl(),
-//                croatianNewsMutableList.getValue().get(1).getTitle(),
-//                croatianNewsMutableList.getValue().get(1).getDescription(),
-//                croatianNewsMutableList.getValue().get(1).getSource(),
-//                croatianNewsMutableList.getValue().get(1).getPublishingDate(),
-//                croatianNewsMutableList.getValue().get(1).getImageUrl());
-//        bookmarkedNewsViewModel.insert(bookmarkedNews);
+
         return bookmarkedNewsViewModel.getAllBookmarkedNews();
     }
 
