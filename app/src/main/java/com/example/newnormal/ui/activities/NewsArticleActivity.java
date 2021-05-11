@@ -38,7 +38,12 @@ import java.util.concurrent.ExecutionException;
 public class NewsArticleActivity extends AppCompatActivity {
     private BookmarkedNewsViewModel bookmarkedNewsViewModel;
     private String url = "";
-    private News news;
+    private String title = "";
+    private String description = "";
+    private String source = "";
+    private String publishingDate = "";
+    private String imageUrl = "";
+
     private BookmarkedNews bookmarkedNews;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -50,13 +55,24 @@ public class NewsArticleActivity extends AppCompatActivity {
 
         WebView webView = findViewById(R.id.web);
         Intent intent = getIntent();
-        news = intent.getParcelableExtra("News");
+        News news = intent.getParcelableExtra("News");
         bookmarkedNews = intent.getParcelableExtra("BookmarkedNews");
-        if (news != null) {
+
+        if (news != null) { // Activity was entered from WorldNewsFragment or CroatianNewsFragment
             url = news.getUrl();
+            title = news.getTitle();
+            description = news.getDescription();
+            source = news.getSource();
+            publishingDate = news.getPublishingDate();
+            imageUrl = news.getImageUrl();
         }
-        else if (bookmarkedNews != null) {
+        else if (bookmarkedNews != null) { // Activity was entered from BookmarkedNewsFragment
             url = bookmarkedNews.getUrl();
+            title = bookmarkedNews.getTitle();
+            description = bookmarkedNews.getDescription();
+            source = bookmarkedNews.getSource();
+            publishingDate = bookmarkedNews.getPublishingDate();
+            imageUrl = bookmarkedNews.getImageUrl();
         }
 
         webView.getSettings().setDomStorageEnabled(true);
@@ -109,14 +125,7 @@ public class NewsArticleActivity extends AppCompatActivity {
             try {
                 BookmarkedNews bookmarkedNews = bookmarkedNewsViewModel.getBookmarkedNewsByUrl(url);
                 if (bookmarkedNews == null) {
-                    BookmarkedNews newBookmarkedNews = new BookmarkedNews(
-                            news.getUrl(),
-                            news.getTitle(),
-                            news.getDescription(),
-                            news.getSource(),
-                            news.getPublishingDate(),
-                            news.getImageUrl());
-                    bookmarkedNewsViewModel.insert(newBookmarkedNews);
+                    bookmarkedNewsViewModel.insert(new BookmarkedNews(url, title, description, source, publishingDate, imageUrl));
                     item.setIcon(R.drawable.ic_baseline_bookmark_added_24);
                     Toast.makeText(this, "News article bookmarked!", Toast.LENGTH_SHORT).show();
                 }
