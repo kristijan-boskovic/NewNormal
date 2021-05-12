@@ -63,14 +63,13 @@ public class BookmarkedNewsFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.search_menu, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) item.getActionView();
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { // TODO: Uncomment and fix (issue with query results not appearing on initial fragment start
-                                                                                    // TODO: It has to to something with async data getting from database
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) { // TODO: Uncomment and fix (issue with query results not appearing on initial fragment start
+//        super.onCreateOptionsMenu(menu, inflater);                                        // TODO: It has to to something with async data getting from database
+//        inflater.inflate(R.menu.search_menu, menu);
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        SearchView searchView = (SearchView) item.getActionView();
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String query) {
 //                return false;
@@ -83,5 +82,5 @@ public class BookmarkedNewsFragment extends Fragment {
 //                return false;
 //            }
 //        });
-    }
+//    }
 }
