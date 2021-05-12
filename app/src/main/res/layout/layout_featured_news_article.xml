@@ -24,7 +24,7 @@
         style="@style/miniTitle"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textColor="@color/featuredNewsContentColor"
+        android:textColor="@color/newsDescriptionColor"
         android:layout_marginTop="5dp"
         android:text="@string/news_article_description" />
 </LinearLayout>

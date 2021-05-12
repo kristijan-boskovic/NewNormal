@@ -3,7 +3,7 @@
     android:layout_height="100dp"
     android:layout_marginTop="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:elevation="2dp"
+    android:elevation="5dp"
     android:background="@drawable/my_rect">
 
     <ImageView
@@ -22,13 +22,15 @@
         android:ellipsize="end"
         android:text="@string/news_article_title"
         android:layout_toEndOf="@id/iv_news_image"
-        android:layout_marginStart="5dp" />
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:textColor="@color/newsHeaderColor" />
 
     <TextView
         android:id="@+id/tv_news_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/featuredNewsContentColor"
+        android:textColor="@color/newsDescriptionColor"
         android:layout_toRightOf="@id/iv_news_image"
         android:layout_below="@id/tv_news_title"
         android:layout_marginTop="5dp"
@@ -37,6 +39,7 @@
         android:ellipsize="end"
         android:text="@string/news_article_description"
         android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_toEndOf="@id/iv_news_image" />
 
     <TextView
@@ -45,12 +48,13 @@
         android:layout_height="wrap_content"
         android:text="@string/dd_mm_yyyy"
         android:layout_alignParentBottom="true"
-        android:textColor="#8E909A"
+        android:textColor="@color/newsHeaderColor"
         android:textSize="11sp"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/iv_news_image"
         android:layout_marginStart="5dp"
-        android:layout_toEndOf="@id/iv_news_image" />
+        android:layout_toEndOf="@id/iv_news_image"
+        android:layout_marginBottom="2dp"/>
 
     <TextView
         android:id="@+id/tv_news_source"
@@ -58,10 +62,11 @@
         android:layout_height="wrap_content"
         android:text="@string/news_source"
         android:layout_alignParentBottom="true"
-        android:textColor="#8E909A"
+        android:textColor="@color/newsHeaderColor"
         android:textSize="11sp"
         android:layout_marginRight="5dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="5dp" />
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="2dp"/>
 </RelativeLayout>

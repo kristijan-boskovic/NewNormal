@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#2A2E43</color>
     <color name="colorAccent">#FF402D</color>
     <color name="bottomNavigationTintColor">#B2B2B2</color>
-    <color name="bottomNavigationSelectedColor">#FC4926</color>
+    <color name="bottomNavigationSelectedColor">#009FF4</color>
 
     <!--colors for light mode-->
     <color name="contentBodyColor">#FCFCFC</color>
@@ -12,5 +12,9 @@
     <color name="bottomNavigationBackground">#F7F7F7</color>
     <color name="imageBorderColor">#E01E7A</color>
     <color name="miniTitle">#2A2E43</color>
-    <color name="featuredNewsContentColor">#8E909A</color>
+
+    <color name="newsDescriptionColor">#8E909A</color>
+    <color name="newsBackgroundColor">#F5F5F5</color>
+    <color name="newsArticleColor">#FFFFFF</color>
+    <color name="newsHeaderColor">#000000</color>
 </resources>
