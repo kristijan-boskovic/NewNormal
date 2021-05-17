@@ -107,10 +107,10 @@ public class NewsArticleActivity extends AppCompatActivity {
 
         MenuItem item = menu.findItem(R.id.action_bookmark);
         if (bookmarkedNews == null) {
-            item.setIcon(R.drawable.ic_baseline_bookmark_24);
+            item.setIcon(R.drawable.ic_baseline_bookmark_border_24);
         }
         else {
-            item.setIcon(R.drawable.ic_baseline_bookmark_added_24);
+            item.setIcon(R.drawable.ic_baseline_bookmark_24);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -126,12 +126,12 @@ public class NewsArticleActivity extends AppCompatActivity {
                 BookmarkedNews bookmarkedNews = bookmarkedNewsViewModel.getBookmarkedNewsByUrl(url);
                 if (bookmarkedNews == null) {
                     bookmarkedNewsViewModel.insert(new BookmarkedNews(url, title, description, source, publishingDate, imageUrl));
-                    item.setIcon(R.drawable.ic_baseline_bookmark_added_24);
+                    item.setIcon(R.drawable.ic_baseline_bookmark_24);
                     Toast.makeText(this, "News article bookmarked!", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     bookmarkedNewsViewModel.delete(bookmarkedNews);
-                    item.setIcon(R.drawable.ic_baseline_bookmark_24);
+                    item.setIcon(R.drawable.ic_baseline_bookmark_border_24);
                     Toast.makeText(this, "News article removed from bookmarks!", Toast.LENGTH_SHORT).show();
                 }
             } catch (ExecutionException e) {

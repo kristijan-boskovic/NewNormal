@@ -53,7 +53,7 @@ public class NewsViewModel extends AndroidViewModel {
                 new EverythingRequest.Builder()
                         .q("covid")
                         .language("en")
-                        .sources("google-news,bbc-news,independent,abc-news,cbs-news,cnn,medical-news-today,nbc-news,time")
+                        .sources("google-news,bbc-news,independent,abc-news,cbs-news,medical-news-today,nbc-news,time")
                         .sortBy("publishedAt")
                         .pageSize(100)
                         .build(),
