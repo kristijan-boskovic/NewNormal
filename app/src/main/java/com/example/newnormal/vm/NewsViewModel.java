@@ -88,7 +88,7 @@ public class NewsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<News>> getCroatianNewsFromScraping() {
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i < 6; i++) { // Scrape first 5 pages
             String url = TOTAL_CROATIA_NEWS_API_URL + "/tag/coronavirus/page-" + i;
             new CroatianNewsJsoupTask().execute(url);
         }

@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.BookmarkedNews;
-import com.example.newnormal.data.models.CachedNews;
 import com.example.newnormal.data.models.News;
 import com.example.newnormal.data.models.TravelAdvisory;
 import com.example.newnormal.ui.BottomNavigationBehavior;
@@ -21,7 +20,6 @@ import com.example.newnormal.ui.fragments.CroatianNewsFragment;
 import com.example.newnormal.ui.fragments.TravelRiskFragment;
 import com.example.newnormal.ui.fragments.WorldNewsFragment;
 import com.example.newnormal.vm.BookmarkedNewsViewModel;
-import com.example.newnormal.vm.CachedNewsViewModel;
 import com.example.newnormal.vm.NewsViewModel;
 import com.example.newnormal.vm.TravelRiskViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -44,43 +42,34 @@ public class MainActivity extends AppCompatActivity {
     private static LanguageServiceClient mLanguageClient;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+            = item -> {
+                switch (item.getItemId()) {
+                    case R.id.navigationWorldNews:
+                        switchToWorldNewsFragment();
+                        return true;
+                    case R.id.navigationCroatianNews:
+                        switchToCroatianNewsFragment();
+                        return true;
+                    case R.id.navigationTravelRiskMap:
+                        switchToTravelRiskFragment();
+                        return true;
+                    case R.id.navigationBookmarkedNews:
+                        switchToBookmarkedNewsFragment();
+                        return true;
+                }
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigationWorldNews:
-                    switchToWorldNewsFragment();
-                    return true;
-                case R.id.navigationCroatianNews:
-                    switchToCroatianNewsFragment();
-                    return true;
-                case R.id.navigationTravelRiskMap:
-                    switchToTravelRiskFragment();
-                    return true;
-                case R.id.navigationBookmarkedNews:
-                    switchToBookmarkedNewsFragment();
-                    return true;
-            }
-
-            return false;
-        }
-    };
+                return false;
+            };
 
     MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
     MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
     LiveData<List<BookmarkedNews>> bookmarkedNewsMutableList;
-    LiveData<List<CachedNews>> cachedNewsMutableList;
     MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>> travelAdvisoryMutableMap = new MutableLiveData<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        if(new DarkModePrefManager(this).isNightMode()){
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//        }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -89,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
 
-        // create the language client
+        // Create the language client
         try {
             mLanguageClient = LanguageServiceClient.create(
                     LanguageServiceSettings.newBuilder()
@@ -113,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         bookmarkedNewsMutableList = getBookmarkedNewsFromDatabase();
-//        cachedNewsMutableList = getCachedNewsFromDatabase();
 //        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory(); // TODO: avoiding API calls, uncomment later
     }
 
@@ -245,12 +233,6 @@ public class MainActivity extends AppCompatActivity {
         TravelRiskViewModel travelRiskViewModel = ViewModelProviders.of(this).get(TravelRiskViewModel.class);
 
         return travelRiskViewModel.getTravelAdvisory();
-    }
-
-    public LiveData<List<CachedNews>> getCachedNewsFromDatabase() {
-        CachedNewsViewModel cachedNewsViewModel = ViewModelProviders.of(this).get(CachedNewsViewModel.class);
-
-        return cachedNewsViewModel.getAllCachedNews();
     }
     //endregion
 

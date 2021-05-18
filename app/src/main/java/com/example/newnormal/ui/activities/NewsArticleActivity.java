@@ -2,24 +2,15 @@ package com.example.newnormal.ui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,10 +19,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.newnormal.R;
 import com.example.newnormal.data.models.BookmarkedNews;
 import com.example.newnormal.data.models.News;
-import com.example.newnormal.data.models.User;
-import com.example.newnormal.util.UserClient;
 import com.example.newnormal.vm.BookmarkedNewsViewModel;
-import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.ExecutionException;
 

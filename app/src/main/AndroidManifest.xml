@@ -13,35 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.example.newnormal.ui.activities.OfferDetailsActivity" />
-
         <activity
-            android:name="com.example.newnormal.ui.activities.AddEditOfferActivity"
-            android:parentActivityName="com.example.newnormal.ui.activities.OldMainActivity" />
-
-        <activity android:name="com.example.newnormal.ui.activities.RegistrationActivity" />
-
-        <activity
-            android:name="com.example.newnormal.ui.activities.OldMainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name="com.example.newnormal.ui.activities.MainActivity"
             android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name="com.example.newnormal.ui.activities.LoginActivity"
-            android:label="@string/app_name">
-        </activity>
-
-        <activity
-            android:name="com.example.newnormal.ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.newnormal.ui.activities.NewsArticleActivity" />
+        <activity
+            android:name="com.example.newnormal.ui.activities.NewsArticleActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

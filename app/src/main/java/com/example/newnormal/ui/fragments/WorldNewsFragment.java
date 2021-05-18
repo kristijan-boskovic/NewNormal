@@ -1,6 +1,7 @@
 package com.example.newnormal.ui.fragments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -19,18 +21,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newnormal.R;
-import com.example.newnormal.data.models.CachedNews;
 import com.example.newnormal.data.models.News;
 import com.example.newnormal.ui.activities.MainActivity;
 import com.example.newnormal.ui.activities.NewsArticleActivity;
-import com.example.newnormal.ui.adapters.CachedNewsAdapter;
 import com.example.newnormal.ui.adapters.NewsAdapter;
 
 import java.util.List;
 
 public class WorldNewsFragment extends Fragment {
     private final NewsAdapter newsAdapter = new NewsAdapter();
-//private final CachedNewsAdapter newsAdapter = new CachedNewsAdapter();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
@@ -47,7 +46,6 @@ public class WorldNewsFragment extends Fragment {
         activity.setTitle(R.string.world_covid_news);
 
         LiveData<List<News>> newsList = activity.getWorldNewsMutableList();
-//        LiveData<List<CachedNews>> newsList = activity.getCachedNewsFromDatabase();
         newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
             @Override
             public void onChanged(@Nullable List<News> newsList) {
