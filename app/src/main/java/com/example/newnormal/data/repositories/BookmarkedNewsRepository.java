@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.newnormal.data.BookmarkedNewsDatabase;
+import com.example.newnormal.data.NewsDatabase;
 import com.example.newnormal.data.dao.BookmarkedNewsDao;
 import com.example.newnormal.data.models.BookmarkedNews;
 
@@ -17,8 +17,8 @@ public class BookmarkedNewsRepository {
     private final LiveData<List<BookmarkedNews>> allBookmarkedNews;
 
     public BookmarkedNewsRepository(Application application) {
-        BookmarkedNewsDatabase bookmarkedNewsDatabase = BookmarkedNewsDatabase.getInstance(application);
-        bookmarkedNewsDao = bookmarkedNewsDatabase.bookmarkedNewsDao();
+        NewsDatabase newsDatabase = NewsDatabase.getInstance(application);
+        bookmarkedNewsDao = newsDatabase.bookmarkedNewsDao();
         allBookmarkedNews = bookmarkedNewsDao.getAllBookmarkedNews();
     }
 

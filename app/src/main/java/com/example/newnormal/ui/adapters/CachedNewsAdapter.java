@@ -12,16 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newnormal.R;
-import com.example.newnormal.data.models.BookmarkedNews;
+import com.example.newnormal.data.models.CachedNews;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class BookmarkedNewsAdapter extends RecyclerView.Adapter<BookmarkedNewsAdapter.NewsHolder> implements Filterable {
-    private List<BookmarkedNews> newsList;
-    private List<BookmarkedNews> newsListAll;
+public class CachedNewsAdapter extends RecyclerView.Adapter<CachedNewsAdapter.NewsHolder> implements Filterable {
+    private List<CachedNews> newsList = new ArrayList<>();
+    private List<CachedNews> newsListAll;
     private OnItemClickListener listener;
 
     @NonNull
@@ -33,7 +33,7 @@ public class BookmarkedNewsAdapter extends RecyclerView.Adapter<BookmarkedNewsAd
 
     @Override
     public void onBindViewHolder(@NonNull NewsHolder holder, int position) {
-        BookmarkedNews currentNews = newsList.get(position);
+        CachedNews currentNews = newsList.get(position);
         holder.tvNewsTitle.setText(currentNews.getTitle());
         holder.tvNewsDescription.setText(currentNews.getDescription());
         holder.tvNewsSource.setText(currentNews.getSource());
@@ -55,21 +55,16 @@ public class BookmarkedNewsAdapter extends RecyclerView.Adapter<BookmarkedNewsAd
 
     @Override
     public int getItemCount() {
-        if (newsList != null) {
-            return newsList.size();
-        }
-        else {
-            return 0;
-        }
+        return newsList.size();
     }
 
-    public void setNews(List<BookmarkedNews> newsList) {
+    public void setNews(List<CachedNews> newsList) {
         this.newsList = newsList;
         this.newsListAll = new ArrayList<>(newsList);
         notifyDataSetChanged();
     }
 
-    public BookmarkedNews getNewsAt(int position) {
+    public CachedNews getNewsAt(int position) {
         return newsList.get(position);
     }
 
@@ -101,7 +96,7 @@ public class BookmarkedNewsAdapter extends RecyclerView.Adapter<BookmarkedNewsAd
     }
 
     public interface OnItemClickListener {
-        void onItemClick(BookmarkedNews news);
+        void onItemClick(CachedNews news);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -112,13 +107,13 @@ public class BookmarkedNewsAdapter extends RecyclerView.Adapter<BookmarkedNewsAd
         // Runs on background thread
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<BookmarkedNews> filteredList = new ArrayList<>();
+            List<CachedNews> filteredList = new ArrayList<>();
 
             if (constraint.toString().isEmpty()) {
                 filteredList.addAll(newsListAll);
             }
             else {
-                for (BookmarkedNews news : newsListAll) {
+                for (CachedNews news : newsListAll) {
                     if (news.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         filteredList.add(news);
                     }
@@ -134,7 +129,7 @@ public class BookmarkedNewsAdapter extends RecyclerView.Adapter<BookmarkedNewsAd
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             newsList.clear();
-            newsList.addAll((Collection<? extends BookmarkedNews>) results.values);
+            newsList.addAll((Collection<? extends CachedNews>) results.values);
             notifyDataSetChanged();
         }
     };

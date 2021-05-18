@@ -55,7 +55,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> im
 
     @Override
     public int getItemCount() {
-        return newsList.size();
+        if (newsList != null) {
+            return newsList.size();
+        }
+        else {
+            return 0;
+        }
     }
 
     public void setNews(List<News> newsList) {
@@ -128,8 +133,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> im
         // Runs on UI thread
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            newsList.clear();
-            newsList.addAll((Collection<? extends News>) results.values);
+            if (newsList != null) {
+                newsList.clear();
+                newsList.addAll((Collection<? extends News>) results.values);
+            }
             notifyDataSetChanged();
         }
     };

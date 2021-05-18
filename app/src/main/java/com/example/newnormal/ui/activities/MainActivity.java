@@ -6,16 +6,13 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.room.Room;
 
 import com.example.newnormal.R;
-import com.example.newnormal.data.BookmarkedNewsDatabase;
-import com.example.newnormal.data.dao.BookmarkedNewsDao;
 import com.example.newnormal.data.models.BookmarkedNews;
+import com.example.newnormal.data.models.CachedNews;
 import com.example.newnormal.data.models.News;
 import com.example.newnormal.data.models.TravelAdvisory;
 import com.example.newnormal.ui.BottomNavigationBehavior;
@@ -24,6 +21,7 @@ import com.example.newnormal.ui.fragments.CroatianNewsFragment;
 import com.example.newnormal.ui.fragments.TravelRiskFragment;
 import com.example.newnormal.ui.fragments.WorldNewsFragment;
 import com.example.newnormal.vm.BookmarkedNewsViewModel;
+import com.example.newnormal.vm.CachedNewsViewModel;
 import com.example.newnormal.vm.NewsViewModel;
 import com.example.newnormal.vm.TravelRiskViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -72,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
     MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
     LiveData<List<BookmarkedNews>> bookmarkedNewsMutableList;
+    LiveData<List<CachedNews>> cachedNewsMutableList;
     MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>> travelAdvisoryMutableMap = new MutableLiveData<>();
 
     @Override
@@ -114,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         bookmarkedNewsMutableList = getBookmarkedNewsFromDatabase();
+//        cachedNewsMutableList = getCachedNewsFromDatabase();
 //        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory(); // TODO: avoiding API calls, uncomment later
     }
 
@@ -245,6 +245,12 @@ public class MainActivity extends AppCompatActivity {
         TravelRiskViewModel travelRiskViewModel = ViewModelProviders.of(this).get(TravelRiskViewModel.class);
 
         return travelRiskViewModel.getTravelAdvisory();
+    }
+
+    public LiveData<List<CachedNews>> getCachedNewsFromDatabase() {
+        CachedNewsViewModel cachedNewsViewModel = ViewModelProviders.of(this).get(CachedNewsViewModel.class);
+
+        return cachedNewsViewModel.getAllCachedNews();
     }
     //endregion
 

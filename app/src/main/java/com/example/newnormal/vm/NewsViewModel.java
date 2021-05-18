@@ -45,6 +45,9 @@ public class NewsViewModel extends AndroidViewModel {
         super(application);
     }
 
+    MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
+    List<News> croatianNewsList = new ArrayList<>();
+
     public LiveData<List<News>> getWorldNewsFromApi() {
         final MutableLiveData<List<News>> worldNewsMutableList = new MutableLiveData<>();
 
@@ -84,24 +87,16 @@ public class NewsViewModel extends AndroidViewModel {
         return worldNewsMutableList;
     }
 
-    public LiveData<List<News>> getCroatianNewsFromScraping() throws ExecutionException, InterruptedException {
-        List<News> croatianNewsList = new ArrayList<>();
-
-        for (int i = 1; i < 2; i++) { // TODO: change this to < 11 after everything else is developed
+    public LiveData<List<News>> getCroatianNewsFromScraping() {
+        for (int i = 1; i < 11; i++) {
             String url = TOTAL_CROATIA_NEWS_API_URL + "/tag/coronavirus/page-" + i;
-            Elements elements = new CroatianNewsJsoupTask().execute(url).get();
-            croatianNewsList.addAll(fillCroatianNewsList(elements));
+            new CroatianNewsJsoupTask().execute(url);
         }
-
-        MutableLiveData<List<News>> croatianNewsMutableList = new MutableLiveData<>();
-        String newsTitlesString = mergeAllNewsTitles(croatianNewsList);
-        MainActivity.filterPositiveNewsTitles(croatianNewsList, newsTitlesString);
-        croatianNewsMutableList.setValue(croatianNewsList);
 
         return croatianNewsMutableList;
     }
 
-    private static class CroatianNewsJsoupTask extends AsyncTask<String, Void, Elements> {
+    private class CroatianNewsJsoupTask extends AsyncTask<String, Void, Elements> {
         @Override
         protected Elements doInBackground(String... url) {
             Document doc = null;
@@ -117,11 +112,16 @@ public class NewsViewModel extends AndroidViewModel {
             return doc.select("div.listingPage-items");
         }
 
-//        @Override
-//        protected void onPostExecute(String result) {
-//            //if you had a ui element, you could display the title
+        @Override
+        protected void onPostExecute(Elements result) {
+            //if you had a ui element, you could display the title
 //            ((TextView)findViewById (R.id.myTextView)).setText (result);
-//        }
+
+            croatianNewsList.addAll(fillCroatianNewsList(result));
+            String newsTitlesString = mergeAllNewsTitles(croatianNewsList);
+            MainActivity.filterPositiveNewsTitles(croatianNewsList, newsTitlesString);
+            croatianNewsMutableList.setValue(croatianNewsList);
+        }
     }
 
     private void fillWorldNewsList(List<Article> articles, List<News> worldNewsList, LinkedHashSet<News> hashSet) {
