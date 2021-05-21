@@ -1,7 +1,7 @@
 package com.example.newnormal.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,21 +42,21 @@ public class WorldNewsFragment extends Fragment {
         assert activity != null;
         activity.setTitle(R.string.world_covid_news);
 
+        ProgressDialog pd = new ProgressDialog(activity, R.style.AlertDialogStyle);
+        pd.setMessage(getString(R.string.fetching_news_text));
+        pd.setCancelable(false);
+        pd.show();
+
         LiveData<List<News>> newsList = activity.getWorldNewsMutableList();
-        newsList.observe(getViewLifecycleOwner(), new Observer<List<News>>() {
-            @Override
-            public void onChanged(@Nullable List<News> newsList) {
-                newsAdapter.setNews(newsList);
-            }
+        newsList.observe(getViewLifecycleOwner(), newsList1 -> {
+            newsAdapter.setNews(newsList1);
+            pd.dismiss();
         });
 
-        newsAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(News news) {
-                Intent intent = new Intent(getActivity(), NewsArticleActivity.class);
-                intent.putExtra("News", news);
-                startActivity(intent);
-            }
+        newsAdapter.setOnItemClickListener(news -> {
+            Intent intent = new Intent(getActivity(), NewsArticleActivity.class);
+            intent.putExtra("News", news);
+            startActivity(intent);
         });
 
         return view;

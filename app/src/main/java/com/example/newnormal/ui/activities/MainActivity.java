@@ -1,5 +1,6 @@
 package com.example.newnormal.ui.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -92,17 +93,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-//            worldNewsMutableList = (MutableLiveData<List<News>>) getNewsFromApi();
-//            croatianNewsMutableList = (MutableLiveData<List<News>>) getNewsFromScraping();
-            croatianNewsMutableList = (MutableLiveData<List<News>>) getNewsFromScraping(); // TODO: delete this line and uncomment two lines above after everything else is developed
-            worldNewsMutableList = croatianNewsMutableList; // TODO: delete this line and uncomment two lines above after everything else is developed
+            worldNewsMutableList = (MutableLiveData<List<News>>) getNewsFromApi();
+            croatianNewsMutableList = (MutableLiveData<List<News>>) getNewsFromScraping();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
         bookmarkedNewsMutableList = getBookmarkedNewsFromDatabase();
-//        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory(); // TODO: avoiding API calls, uncomment later
+        travelAdvisoryMutableMap = (MutableLiveData<Map<String, TravelAdvisory.CountryData.Advisory>>) getTravelAdvisory();
     }
 
     //region Sentiment analysis methods

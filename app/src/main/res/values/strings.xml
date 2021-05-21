@@ -22,4 +22,5 @@
     <string name="last_updated_date">Last updated date</string>
     <string name="bookmark">Bookmark</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="fetching_news_text">Fetching positive news…</string>
 </resources>

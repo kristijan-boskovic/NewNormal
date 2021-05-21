@@ -30,33 +30,28 @@ public class TravelRiskDialog extends AppCompatDialogFragment {
         Bundle mArgs = getArguments();
         String lastUpdatedDate = mArgs.getString("lastUpdated");
 
-//        @SuppressLint("SimpleDateFormat") // TODO: avoiding API calls, uncomment later
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Date date = null;
-//        try {
-//            date = sdf.parse(lastUpdatedDate);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        @SuppressLint("SimpleDateFormat")
-//        Format formatter = new SimpleDateFormat("d MMMM y, HH:mm:ss");
-//        String lastUpdatedDateFormatted = formatter.format(date);
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse(lastUpdatedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        @SuppressLint("SimpleDateFormat")
+        Format formatter = new SimpleDateFormat("d MMMM y, HH:mm:ss");
+        String lastUpdatedDateFormatted = formatter.format(date);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_travel_risk, null);
         TextView tvLastUpdated = view.findViewById(R.id.tv_last_updated);
-//        String lastUpdatedText = "Last updated: " + lastUpdatedDateFormatted + " CET"; // TODO: avoiding API calls, uncomment later
-//        tvLastUpdated.setText(lastUpdatedText); // TODO: avoiding API calls, uncomment later
-        String lastUpdatedText = "Last updated: Placeholder"; // TODO: delete this line and uncomment two lines above after everything else is developed
-        tvLastUpdated.setText(lastUpdatedText); // TODO: delete this line and uncomment two lines above after everything else is developed
+        String lastUpdatedText = "Last updated: " + lastUpdatedDateFormatted + " CET";
+        tvLastUpdated.setText(lastUpdatedText);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Info")
                 .setView(view)
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
+                .setPositiveButton("ok", (dialogInterface, i) -> {
                 });
 
         return builder.create();

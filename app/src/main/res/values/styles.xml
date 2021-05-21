@@ -43,4 +43,8 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/miniTitle</item>
     </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/bottomNavigationSelectedColor</item>
+    </style>
 </resources>
